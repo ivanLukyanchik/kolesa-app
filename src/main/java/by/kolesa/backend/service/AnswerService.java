@@ -11,6 +11,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class AnswerService {
+
     private final AnswerRepository answerRepository;
 
     public List<Answer> getAllAnswers() {

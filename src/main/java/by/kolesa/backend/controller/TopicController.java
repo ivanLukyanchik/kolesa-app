@@ -14,15 +14,16 @@ import java.util.List;
 @RequestMapping("/topics")
 @RequiredArgsConstructor
 public class TopicController {
+
     private final TopicService topicService;
 
     @GetMapping()
-    public List<Topic> getAllQuestions() {
+    public List<Topic> getAllTopics() {
         return topicService.getAllTopics();
     }
 
     @GetMapping("/{id}")
-    public Topic getTopic(@PathVariable Long id) {
+    public Topic getTopicById(@PathVariable Long id) {
         return topicService.getTopic(id);
     }
 }

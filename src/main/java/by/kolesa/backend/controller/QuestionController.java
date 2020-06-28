@@ -14,6 +14,7 @@ import java.util.List;
 @RequestMapping("/questions")
 @RequiredArgsConstructor
 public class QuestionController {
+
     private final QuestionService questionService;
 
     @GetMapping()
@@ -22,7 +23,7 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}")
-    public Question getQuestion(@PathVariable Long id) {
+    public Question getQuestionById(@PathVariable Long id) {
         return questionService.getQuestion(id);
     }
 
