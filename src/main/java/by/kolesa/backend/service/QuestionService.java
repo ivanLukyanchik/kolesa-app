@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -28,4 +29,13 @@ public class QuestionService {
         return questionRepository.findById(id).get();
     }
 
+    public List<Question> get10RandomQuestions() {
+        return questionRepository.findTopN(10);
+    }
+
+    public List<Question> get10RandomQuestionsByTopicId(Long topicId) {
+        List<Question> questions = questionRepository.findTopNByTopicId(topicId, 10);
+        Collections.shuffle(questions);
+        return questions;
+    }
 }

@@ -32,4 +32,14 @@ public class QuestionController {
         return questionService.getQuestionsByTopic(topicId);
     }
 
+    @GetMapping("/random")
+    public List<Question> get10RandomQuestions() {
+        return questionService.get10RandomQuestions();
+    }
+
+    @GetMapping("/topic/{id}/random")
+    public List<Question> get10RandomQuestionsByTopicId(@PathVariable("id") Long topicId) {
+        return questionService.get10RandomQuestionsByTopicId(topicId);
+    }
+
 }
