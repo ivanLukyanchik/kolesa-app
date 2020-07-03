@@ -34,12 +34,17 @@ public class User {
     private String password;
 
     @Email
-    @NotEmpty(message = "Email is required")
     private String email;
+
+    @Column(name = "PHONE_NUMBER")
+    private String phoneNumber;
 
     @Column(name = "CREATED_DATE")
     private Instant createdDate;
 
     private boolean enabled;
+
+    @Column(name = "REGISTERED_BY_EMAIL")
+    private boolean registeredByEmail;
 
 }

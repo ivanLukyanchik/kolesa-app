@@ -3,7 +3,9 @@ package by.kolesa.backend.service;
 import by.kolesa.backend.dto.AuthenticationResponse;
 import by.kolesa.backend.dto.LoginRequest;
 import by.kolesa.backend.dto.NotificationEmail;
+import by.kolesa.backend.dto.RefreshTokenRequest;
 import by.kolesa.backend.dto.RegisterRequest;
+import by.kolesa.backend.dto.SmsRequest;
 import by.kolesa.backend.exception.InvalidTokenException;
 import by.kolesa.backend.exception.UserNotFoundException;
 import by.kolesa.backend.model.User;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 
 @Service
@@ -44,27 +47,60 @@ public class AuthService {
 
     private final JwtProvider jwtProvider;
 
+    private final RefreshTokenService refreshTokenService;
+
+    private final TwilioSmsService twilioSmsService;
+
     @Value("${mail.activation.url}")
     private String ACTIVATION_URL;
 
-    @SneakyThrows
     public void signUp(RegisterRequest registerRequest) {
         User user = new User();
         user.setUsername(registerRequest.getUsername());
-        user.setEmail(registerRequest.getEmail());
+        if (registerRequest.getEmail() != null) {
+            if (!registerRequest.getEmail().isBlank()) {
+                user.setEmail(registerRequest.getEmail());
+                user.setRegisteredByEmail(true);
+            }
+        } else {
+            user.setPhoneNumber(registerRequest.getPhone());
+            user.setRegisteredByEmail(false);
+        }
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setCreatedDate(Instant.now());
         user.setEnabled(false);
 
         userRepository.save(user);
 
-        String token = generateVerificationToken(user);
-        String message = mailContentBuilder.build(ACTIVATION_URL + "/" + token);
-        mailService.sendMail(new NotificationEmail("Please Activate your account", user.getEmail(), message));
+        sendActivationCode(user);
     }
 
-    private String generateVerificationToken(User user) {
+    @SneakyThrows
+    private void sendActivationCode(User user) {
+        String token;
+        if (user.isRegisteredByEmail()) {
+            token = generateMailVerificationToken(user);
+            String message = mailContentBuilder.buildForSignUp(ACTIVATION_URL + "/" + token);
+            mailService.sendMail(new NotificationEmail("Please Activate your account", user.getEmail(), message));
+        } else {
+            token = generateMobileVerificationToken(user);
+            twilioSmsService.sendSms(new SmsRequest(user.getPhoneNumber(), token + " is your \"Kolesa\" authentication code"));
+        }
+    }
+
+    private String generateMailVerificationToken(User user) {
         String token = UUID.randomUUID().toString();
+        VerificationToken verificationToken = new VerificationToken();
+        verificationToken.setToken(token);
+        verificationToken.setUser(user);
+        verificationTokenRepository.save(verificationToken);
+        return token;
+    }
+
+    private String generateMobileVerificationToken(User user) {
+        Random random = new Random();
+        int code = random.nextInt((99999 - 10000) + 1) + 10000;
+        String token = String.valueOf(code);
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(token);
         verificationToken.setUser(user);
@@ -92,6 +128,22 @@ public class AuthService {
                 loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtProvider.generateToken(authentication);
-        return new AuthenticationResponse(token, loginRequest.getUsername());
+        return AuthenticationResponse.builder()
+                .authenticationToken(token)
+                .refreshToken(refreshTokenService.generateRefreshToken().getToken())
+                .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpiration()))
+                .username(loginRequest.getUsername())
+                .build();
+    }
+
+    public AuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
+        refreshTokenService.validateToken(refreshTokenRequest.getRefreshToken());
+        String token = jwtProvider.generateTokenWithUsername(refreshTokenRequest.getUsername());
+        return AuthenticationResponse.builder()
+                .username(refreshTokenRequest.getUsername())
+                .refreshToken(refreshTokenRequest.getRefreshToken())
+                .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpiration()))
+                .authenticationToken(token)
+                .build();
     }
 }

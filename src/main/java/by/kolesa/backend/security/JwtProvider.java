@@ -3,7 +3,9 @@ package by.kolesa.backend.security;
 import by.kolesa.backend.exception.LoadingKeystoreException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import lombok.Data;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
@@ -18,16 +20,19 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.time.Instant;
 import java.util.Date;
 
 import static io.jsonwebtoken.Jwts.parser;
 
 @Service
+@Data
 public class JwtProvider {
 
     private KeyStore keyStore;
 
-    private static final long JWT_TOKEN_VALIDITY = 24 * 60 * 60;
+    @Value("${jwt.expiration.time}")
+    private long jwtExpiration;
 
     @PostConstruct
     public void init() throws LoadingKeystoreException {
@@ -46,10 +51,20 @@ public class JwtProvider {
         return Jwts.builder()
                 .setSubject(principal.getUsername())
 //                .setIssuedAt(new Date(System.currentTimeMillis()))
-//                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+                .setExpiration(Date.from(Instant.now().plusMillis(jwtExpiration)))
                 .signWith(getPrivateKey())
                 .compact();
     }
+
+    @SneakyThrows
+    public String generateTokenWithUsername(String username) {
+        return Jwts.builder()
+                .setSubject(username)
+                .setExpiration(Date.from(Instant.now().plusMillis(jwtExpiration)))
+                .signWith(getPrivateKey())
+                .compact();
+    }
+
 
     private PrivateKey getPrivateKey() throws LoadingKeystoreException {
         try {

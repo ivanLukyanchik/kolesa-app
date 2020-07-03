@@ -7,14 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequest {
+public class PasswordResetDto {
 
-    private String email;
+    // TODO validation
+    private String newPassword;
 
-    private String phone;
-
-    private String username;
-
-    private String password;
+    private String token;
 
 }

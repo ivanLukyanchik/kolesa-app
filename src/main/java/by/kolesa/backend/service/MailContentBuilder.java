@@ -11,10 +11,16 @@ public class MailContentBuilder {
 
     private final TemplateEngine templateEngine;
 
-    public String build(String message) {
+    public String buildForSignUp(String message) {
         Context context = new Context();
         context.setVariable("message", message);
-        return templateEngine.process("mailTemplate", context);
+        return templateEngine.process("sign-up", context);
+    }
+
+    public String buildForPasswordReset(String message) {
+        Context context = new Context();
+        context.setVariable("message", message);
+        return templateEngine.process("password-reset", context);
     }
 
 }

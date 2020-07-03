@@ -4,17 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequest {
+public class RefreshTokenRequest {
 
-    private String email;
-
-    private String phone;
+    @NotBlank
+    private String refreshToken;
 
     private String username;
-
-    private String password;
 
 }

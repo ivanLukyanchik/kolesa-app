@@ -27,7 +27,7 @@ public class MailService {
             messageHelper.setFrom("kolesa.app@gmail.com");
             messageHelper.setTo(notificationEmail.getRecipient());
             messageHelper.setSubject(notificationEmail.getSubject());
-            messageHelper.setText(mailContentBuilder.build(notificationEmail.getBody()), true);
+            messageHelper.setText(mailContentBuilder.buildForSignUp(notificationEmail.getBody()), true);
         };
         try {
             mailSender.send(messagePreparator);

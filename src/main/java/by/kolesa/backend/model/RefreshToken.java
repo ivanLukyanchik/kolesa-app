@@ -1,6 +1,7 @@
 package by.kolesa.backend.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,20 +9,19 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import java.time.Instant;
 
-import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "VERIFICATION_TOKENS")
-public class VerificationToken {
+@Table(name = "REFRESH_TOKENS")
+public class RefreshToken {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -29,10 +29,7 @@ public class VerificationToken {
 
     private String token;
 
-    @OneToOne(fetch = LAZY)
-    private User user;
-
-    @Column(name = "EXPIRY_DATE")
-    private Instant expiryDate;
+    @Column(name = "CREATED_DATE")
+    private Instant createdDate;
 
 }
