@@ -6,14 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.List;
 
@@ -22,29 +21,21 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QUESTIONS")
-public class Question {
+@Table(name = "PARAGRAPHS")
+public class Paragraph {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String text;
 
-    @Column(name = "LINK_TO_IMG")
-    private String linkToImage;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="CHAPTER_ID")
+    private Chapter chapter;
 
-    @Column(name = "ANSWERS_COUNT")
-    private int answersCount;
-
-    @Column(name = "TOPIC_ID")
-    private Long topicId;
-
-    @OneToOne
-    private Paragraph paragraph;
-
-    @OneToMany(cascade= CascadeType.ALL)
-    @JoinColumn(name="QUESTION_ID")
-    private List<Answer> answers;
+    @OneToMany
+    @JoinColumn(name="PARAGRAPH_ID")
+    private List<Article> articles;
 
 }

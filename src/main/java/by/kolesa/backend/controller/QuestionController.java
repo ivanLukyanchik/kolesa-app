@@ -42,4 +42,9 @@ public class QuestionController {
         return questionService.get10RandomQuestionsByTopicId(topicId);
     }
 
+    @GetMapping("/chapter/{id}")
+    public List<Question> getQuestionsByChapterId(@PathVariable("id") Long chapterId) {
+        return questionService.getQuestionsByChapterId(chapterId);
+    }
+
 }
