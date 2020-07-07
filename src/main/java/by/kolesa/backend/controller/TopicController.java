@@ -2,6 +2,7 @@ package by.kolesa.backend.controller;
 
 import by.kolesa.backend.model.Topic;
 import by.kolesa.backend.service.TopicService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,7 @@ public class TopicController {
         return topicService.getAllTopics();
     }
 
+    @ApiOperation(value = "This is only for developing purpose", hidden = true)
     @GetMapping("/{id}")
     public Topic getTopicById(@PathVariable Long id) {
         return topicService.getTopic(id);
