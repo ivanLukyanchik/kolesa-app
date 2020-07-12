@@ -17,7 +17,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -39,8 +38,8 @@ public class PaymentController {
     @Value("${paypal.failure.url}")
     private String paypalFailureUrl;
 
-    @RequestMapping("/stripe-form")
-    public String checkout(Model model) {
+    @GetMapping("/stripe-form")
+    public String getStripeForm(Model model) {
         model.addAttribute("amount", 50 * 100);
         model.addAttribute("stripePublicKey", stripePublicKey);
         model.addAttribute("currency", "USD");
@@ -50,7 +49,7 @@ public class PaymentController {
     @PostMapping("/stripe-pay")
     @SneakyThrows
     @ResponseBody
-    public PaymentResponse charge(PaymentDto paymentDto) {
+    public PaymentResponse payWithStripe(PaymentDto paymentDto) {
         Charge charge = paymentsService.charge(paymentDto);
         log.info(charge.toJson());
         return PaymentResponse.builder().chargeId(charge.getId()).status(charge.getStatus())
@@ -65,7 +64,7 @@ public class PaymentController {
 
     @SneakyThrows
     @PostMapping("/paypal-pay")
-    public String pay(@ModelAttribute("payment") PaymentDto paymentDto, HttpServletResponse resp) {
+    public String payWithPaypal(@ModelAttribute("payment") PaymentDto paymentDto, HttpServletResponse resp) {
         Payment payment = paymentsService.createPaypalPayment(paymentDto.getAmount(), paypalFailureUrl, paypalSuccessUrl);
         String link = paymentsService.getApprovalLink(payment);
         if (link != null) {
