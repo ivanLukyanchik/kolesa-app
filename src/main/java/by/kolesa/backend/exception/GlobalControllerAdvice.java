@@ -1,5 +1,12 @@
 package by.kolesa.backend.exception;
 
+import com.paypal.base.rest.PayPalRESTException;
+import com.stripe.exception.APIConnectionException;
+import com.stripe.exception.APIException;
+import com.stripe.exception.AuthenticationException;
+import com.stripe.exception.CardException;
+import com.stripe.exception.StripeException;
+import com.twilio.exception.InvalidRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +32,9 @@ public class GlobalControllerAdvice {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({SendMailException.class, LoadingKeystoreException.class})
+    @ExceptionHandler({SendMailException.class, LoadingKeystoreException.class, PayPalRESTException.class,
+            AuthenticationException.class, InvalidRequestException.class, APIConnectionException.class,
+            CardException.class, APIException.class, StripeException.class})
     public ResponseEntity<String> handleSendMailException(Exception ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
