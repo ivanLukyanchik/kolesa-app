@@ -1,8 +1,10 @@
 package by.kolesa.backend.service;
 
+import by.kolesa.backend.exception.TopicNotFoundException;
 import by.kolesa.backend.model.Topic;
 import by.kolesa.backend.repository.TopicRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,8 +22,9 @@ public class TopicService {
         return topics;
     }
 
+    @SneakyThrows
     public Topic getTopic(Long id) {
-        return topicRepository.findById(id).get();
+        return topicRepository.findById(id).orElseThrow(TopicNotFoundException::new);
     }
 
 }

@@ -27,7 +27,7 @@ public class GlobalControllerAdvice {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
+    @ExceptionHandler({UserNotFoundException.class, AnswerNotFoundException.class})
     public ResponseEntity<String> handleUserNotFoundException(Exception ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
@@ -39,7 +39,7 @@ public class GlobalControllerAdvice {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(InvalidTokenException.class)
+    @ExceptionHandler({InvalidTokenException.class, UserNotLoggedInException.class})
     public ResponseEntity<String> handleInvalidTokenException(Exception ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }

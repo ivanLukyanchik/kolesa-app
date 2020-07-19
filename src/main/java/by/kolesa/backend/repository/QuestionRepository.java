@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface QuestionRepository extends CrudRepository<Question, Long> {
@@ -20,5 +21,7 @@ public interface QuestionRepository extends CrudRepository<Question, Long> {
 
     @Query(value = "SELECT * FROM QUESTIONS ORDER BY RAND() LIMIT :limit", nativeQuery = true)
     List<Question> findTopN(@Param("limit") int limit);
+
+    Optional<Question> findById(Long id);
 
 }

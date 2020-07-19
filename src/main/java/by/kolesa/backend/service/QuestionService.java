@@ -1,8 +1,10 @@
 package by.kolesa.backend.service;
 
+import by.kolesa.backend.exception.QuestionNotFoundException;
 import by.kolesa.backend.model.Question;
 import by.kolesa.backend.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,8 +26,9 @@ public class QuestionService {
         return questionRepository.findAllByTopicId(topicId);
     }
 
+    @SneakyThrows
     public Question getQuestion(Long id) {
-        return questionRepository.findById(id).get();
+        return questionRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
     }
 
     public List<Question> get10RandomQuestions() {
