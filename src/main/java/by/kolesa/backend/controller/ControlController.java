@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -42,17 +43,20 @@ public class ControlController {
 
     @PostMapping
     public void saveControlUserAnswers(@RequestBody ControlAnswersDto controlAnswersDto) {
-        List<UserAnswer> answers = userAnswerService.saveUserAnswers(controlAnswersDto);
         Control control = Control.builder()
                 .durationInSeconds(controlAnswersDto.getDurationInSeconds())
-                .userAnswers(answers)
+                .userAnswers(new ArrayList<>())
                 .build();
+        List<UserAnswer> userAnswers = userAnswerService.getUserAnswersFromDto(controlAnswersDto);
+        for (UserAnswer userAnswer : userAnswers) {
+            control.addUserAnswer(userAnswer);
+        }
         controlService.saveControlAnswers(control);
     }
 
-//    @GetMapping()
-//    public List<Control> getControls() {
-//        return controlService.
-//    }
+    @GetMapping
+    public List<Control> getControlsForLoggedInUser() {
+        return controlService.getControlsForLoggedInUser();
+    }
 
 }

@@ -26,6 +26,8 @@ public class ControlService {
 
     private final UserAnswerService userAnswerService;
 
+    private final UserService userService;
+
     public ControlQuestionsDto getControlQuestionsByTopic(Long id) {
         List<Question> questions = questionRepository.findTopNByTopicId(id, 10);
         String endTime = DateUtil.getCurrentDatePlusMinutes(15);
@@ -55,8 +57,9 @@ public class ControlService {
         controlRepository.save(control);
     }
 
-//    public List<Control> getControlsForLoggedInUser() {
-//        Long userId = userService.getUserIdOfLoggedIn();
-//    }
+    public List<Control> getControlsForLoggedInUser() {
+        Long userId = userService.getUserIdOfLoggedIn();
+        return controlRepository.findByUserAnswersUserId(userId);
+    }
 
 }

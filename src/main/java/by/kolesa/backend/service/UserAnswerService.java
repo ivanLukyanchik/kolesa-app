@@ -7,7 +7,6 @@ import by.kolesa.backend.repository.UserAnswerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,16 +25,15 @@ public class UserAnswerService {
         return userAnswerRepository.findByAnswerIsCorrectAndUserId(false, userId);
     }
 
-    @Transactional
-    public List<UserAnswer> saveUserAnswers(ControlAnswersDto controlAnswersDto) {
-        UserAnswer userAnswer = new UserAnswer();
+    public List<UserAnswer> getUserAnswersFromDto(ControlAnswersDto controlAnswersDto) {
+        UserAnswer userAnswer;
         List<UserAnswer> answers = new ArrayList<>();
         for (UserAnswerDto userAnswerDto : controlAnswersDto.getUserAnswers()) {
+            userAnswer = new UserAnswer();
             userAnswer.setQuestionId(userAnswerDto.getQuestionId());
             userAnswer.setAnswer(answerService.getAnswerById(userAnswerDto.getAnswerId()));
             Long userId = userService.getUserIdOfLoggedIn();
             userAnswer.setUserId(userId);
-            userAnswerRepository.save(userAnswer);
             answers.add(userAnswer);
         }
         return answers;
