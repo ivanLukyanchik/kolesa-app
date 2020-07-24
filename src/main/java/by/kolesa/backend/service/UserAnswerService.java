@@ -22,7 +22,11 @@ public class UserAnswerService {
 
     public List<UserAnswer> getIncorrectUserAnswers() {
         Long userId = userService.getUserIdOfLoggedIn();
-        return userAnswerRepository.findByAnswerIsCorrectAndUserId(false, userId);
+        return userAnswerRepository.findByAnswerIsCorrectAndUserId(false, userId, 10);
+    }
+
+    public long countCorrectUserAnswers(Long userId) {
+        return userAnswerRepository.countByAnswerIsCorrectAndUserId(true, userId);
     }
 
     public List<UserAnswer> getUserAnswersFromDto(ControlAnswersDto controlAnswersDto) {
@@ -37,6 +41,10 @@ public class UserAnswerService {
             answers.add(userAnswer);
         }
         return answers;
+    }
+
+    public long countAllUserAnswers(Long userId) {
+        return userAnswerRepository.countByUserId(userId);
     }
 
 }

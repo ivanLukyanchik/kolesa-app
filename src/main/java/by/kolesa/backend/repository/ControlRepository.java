@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface ControlRepository extends CrudRepository<Control, Long> {
 
-    List<Control> findByUserAnswersUserId(Long userId);
+    List<Control> findByUserId(Long userId);
 
 }

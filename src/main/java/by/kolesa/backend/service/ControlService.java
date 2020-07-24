@@ -1,6 +1,9 @@
 package by.kolesa.backend.service;
 
+import by.kolesa.backend.dto.AnswerResultDto;
+import by.kolesa.backend.dto.ControlAnswersDto;
 import by.kolesa.backend.dto.ControlQuestionsDto;
+import by.kolesa.backend.dto.ControlResultDto;
 import by.kolesa.backend.exception.QuestionNotFoundException;
 import by.kolesa.backend.model.Control;
 import by.kolesa.backend.model.Question;
@@ -53,13 +56,52 @@ public class ControlService {
     }
 
     @Transactional
-    public void saveControlAnswers(Control control) {
+    public void saveControlUserAnswers(ControlAnswersDto controlAnswersDto) {
+        Control control = buildControl(controlAnswersDto);
+        List<UserAnswer> userAnswers = userAnswerService.getUserAnswersFromDto(controlAnswersDto);
+        for (UserAnswer userAnswer : userAnswers) {
+            control.addUserAnswer(userAnswer);
+        }
         controlRepository.save(control);
     }
 
-    public List<Control> getControlsForLoggedInUser() {
+    @SneakyThrows
+    public List<ControlResultDto> getPassedControlsForLoggedInUser() {
+        List<ControlResultDto> controlResults = new ArrayList<>();
+        ControlResultDto controlResultDto;
         Long userId = userService.getUserIdOfLoggedIn();
-        return controlRepository.findByUserAnswersUserId(userId);
+        List<Control> controls = controlRepository.findByUserId(userId);
+        for (Control control : controls) {
+            controlResultDto = new ControlResultDto();
+            controlResultDto.setDurationInSeconds(control.getDurationInSeconds());
+            List<UserAnswer> userAnswers = control.getUserAnswers();
+            List<AnswerResultDto> answerResults = new ArrayList<>();
+            for (UserAnswer userAnswer : userAnswers) {
+                AnswerResultDto answerResultDto = new AnswerResultDto();
+                answerResultDto.setQuestion(questionRepository.findById(userAnswer.getQuestionId()).orElseThrow(QuestionNotFoundException::new));
+                answerResultDto.setAnswer(userAnswer.getAnswer());
+                answerResults.add(answerResultDto);
+            }
+            controlResultDto.setAnswers(answerResults);
+            controlResults.add(controlResultDto);
+        }
+        return controlResults;
+    }
+
+    public String calculatePercentageOfCorrectAnswers() {
+        Long userId = userService.getUserIdOfLoggedIn();
+        long allUserAnswersCount = userAnswerService.countAllUserAnswers(userId);
+        long correctUserAnswersCount = userAnswerService.countCorrectUserAnswers(userId);
+        double percentage = ((double) correctUserAnswersCount / allUserAnswersCount )*100;
+        return String.format("%.2f", percentage);
+    }
+
+    public Control buildControl(ControlAnswersDto controlAnswersDto) {
+        return Control.builder()
+                .durationInSeconds(controlAnswersDto.getDurationInSeconds())
+                .userAnswers(new ArrayList<>())
+                .userId(userService.getUserIdOfLoggedIn())
+                .build();
     }
 
 }

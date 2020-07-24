@@ -2,10 +2,8 @@ package by.kolesa.backend.controller;
 
 import by.kolesa.backend.dto.ControlAnswersDto;
 import by.kolesa.backend.dto.ControlQuestionsDto;
-import by.kolesa.backend.model.Control;
-import by.kolesa.backend.model.UserAnswer;
+import by.kolesa.backend.dto.ControlResultDto;
 import by.kolesa.backend.service.ControlService;
-import by.kolesa.backend.service.UserAnswerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -23,8 +20,6 @@ import java.util.List;
 public class ControlController {
 
     private final ControlService controlService;
-
-    private final UserAnswerService userAnswerService;
 
     @GetMapping("/topic/{id}")
     public ControlQuestionsDto getControlQuestionsByTopic(@PathVariable Long id) {
@@ -41,22 +36,19 @@ public class ControlController {
         return controlService.getControlQuestionsBasedOnIncorrectAnswers();
     }
 
+    @GetMapping("/percentage")
+    public String calculatePercentageOfCorrectAnswers() {
+        return controlService.calculatePercentageOfCorrectAnswers();
+    }
+
     @PostMapping
     public void saveControlUserAnswers(@RequestBody ControlAnswersDto controlAnswersDto) {
-        Control control = Control.builder()
-                .durationInSeconds(controlAnswersDto.getDurationInSeconds())
-                .userAnswers(new ArrayList<>())
-                .build();
-        List<UserAnswer> userAnswers = userAnswerService.getUserAnswersFromDto(controlAnswersDto);
-        for (UserAnswer userAnswer : userAnswers) {
-            control.addUserAnswer(userAnswer);
-        }
-        controlService.saveControlAnswers(control);
+        controlService.saveControlUserAnswers(controlAnswersDto);
     }
 
     @GetMapping
-    public List<Control> getControlsForLoggedInUser() {
-        return controlService.getControlsForLoggedInUser();
+    public List<ControlResultDto> getPassedControlsForLoggedInUser() {
+        return controlService.getPassedControlsForLoggedInUser();
     }
 
 }

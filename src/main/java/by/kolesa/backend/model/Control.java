@@ -36,6 +36,9 @@ public class Control {
     @Column(name = "DURATION")
     private int durationInSeconds;
 
+    @Column(name = "USER_ID")
+    private Long userId;
+
     public void addUserAnswer(UserAnswer userAnswer) {
         this.userAnswers.add(userAnswer);
         userAnswer.setControl(this);
