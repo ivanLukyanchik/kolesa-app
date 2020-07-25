@@ -45,4 +45,7 @@ public class UserAnswer {
     @Column(name = "USER_ID")
     private Long userId;
 
+    @Column(name = "FOR_CONTROL")
+    private boolean forControl;
+
 }

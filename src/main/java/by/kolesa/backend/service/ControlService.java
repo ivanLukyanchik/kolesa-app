@@ -46,7 +46,7 @@ public class ControlService {
     @SneakyThrows
     public ControlQuestionsDto getControlQuestionsBasedOnIncorrectAnswers() {
         List<Question> questions = new ArrayList<>();
-        List<UserAnswer> incorrectUserAnswers = userAnswerService.getIncorrectUserAnswers();
+        List<UserAnswer> incorrectUserAnswers = userAnswerService.getIncorrectUserAnswersForPersonalizedControl();
         int actualSize = incorrectUserAnswers.size();
         if (actualSize < 10) {
             int remainingQuestionsCount = 10 - actualSize;
