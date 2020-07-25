@@ -97,6 +97,7 @@ public class PasswordResetService {
         User user = passwordResetToken.getUser();
         user.setPassword(passwordEncoder.encode(passwordResetDto.getNewPassword()));
         userRepository.save(user);
+        passwordResetRepository.delete(passwordResetToken);
     }
 
 }

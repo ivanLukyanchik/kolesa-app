@@ -108,13 +108,14 @@ public class AuthService {
         return token;
     }
 
+    @Transactional
     public void verifyAccount(String token) throws InvalidTokenException, UserNotFoundException {
-        Optional<VerificationToken> verificationToken = verificationTokenRepository.findByToken(token);
-        verificationToken.orElseThrow(InvalidTokenException::new);
-        fetchUserAndEnable(verificationToken.get());
+        Optional<VerificationToken> verificationTokenOptional = verificationTokenRepository.findByToken(token);
+        VerificationToken verificationToken = verificationTokenOptional.orElseThrow(InvalidTokenException::new);
+        fetchUserAndEnable(verificationToken);
+        verificationTokenRepository.delete(verificationToken);
     }
 
-    @Transactional
     void fetchUserAndEnable(VerificationToken verificationToken) throws UserNotFoundException {
         String username = verificationToken.getUser().getUsername();
         User user = userRepository.findByUsername(username).orElseThrow(() ->

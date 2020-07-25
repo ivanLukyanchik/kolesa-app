@@ -47,6 +47,11 @@ public class ControlService {
     public ControlQuestionsDto getControlQuestionsBasedOnIncorrectAnswers() {
         List<Question> questions = new ArrayList<>();
         List<UserAnswer> incorrectUserAnswers = userAnswerService.getIncorrectUserAnswers();
+        int actualSize = incorrectUserAnswers.size();
+        if (actualSize < 10) {
+            int remainingQuestionsCount = 10 - actualSize;
+            questions.addAll(questionRepository.findTopN(remainingQuestionsCount));
+        }
         for (UserAnswer incorrectUserAnswer : incorrectUserAnswers) {
             Question question = questionRepository.findById(incorrectUserAnswer.getQuestionId()).orElseThrow(QuestionNotFoundException::new);
             questions.add(question);
