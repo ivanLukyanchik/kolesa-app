@@ -4,6 +4,7 @@ import by.kolesa.backend.dto.AnswerResultDto;
 import by.kolesa.backend.dto.ControlAnswersDto;
 import by.kolesa.backend.dto.ControlQuestionsDto;
 import by.kolesa.backend.dto.ControlResultDto;
+import by.kolesa.backend.exception.IncorrectUserAnswersNotFoundException;
 import by.kolesa.backend.exception.QuestionNotFoundException;
 import by.kolesa.backend.model.Control;
 import by.kolesa.backend.model.Question;
@@ -50,6 +51,9 @@ public class ControlService {
         int actualSize = incorrectUserAnswers.size();
         if (actualSize < 10) {
             int remainingQuestionsCount = 10 - actualSize;
+            if (remainingQuestionsCount == 10) {
+                throw new IncorrectUserAnswersNotFoundException();
+            }
             questions.addAll(questionRepository.findTopN(remainingQuestionsCount));
         }
         for (UserAnswer incorrectUserAnswer : incorrectUserAnswers) {

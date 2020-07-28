@@ -27,7 +27,7 @@ public class GlobalControllerAdvice {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({UserNotFoundException.class, AnswerNotFoundException.class})
+    @ExceptionHandler({UserNotFoundException.class, AnswerNotFoundException.class, IncorrectUserAnswersNotFoundException.class})
     public ResponseEntity<String> handleUserNotFoundException(Exception ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
