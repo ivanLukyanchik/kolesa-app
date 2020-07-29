@@ -6,6 +6,7 @@ import by.kolesa.backend.dto.NotificationEmail;
 import by.kolesa.backend.dto.RefreshTokenRequest;
 import by.kolesa.backend.dto.RegisterRequest;
 import by.kolesa.backend.dto.SmsRequest;
+import by.kolesa.backend.exception.CustomBadRequest;
 import by.kolesa.backend.exception.InvalidTokenException;
 import by.kolesa.backend.exception.UserNotFoundException;
 import by.kolesa.backend.model.User;
@@ -13,6 +14,7 @@ import by.kolesa.backend.model.VerificationToken;
 import by.kolesa.backend.repository.UserRepository;
 import by.kolesa.backend.repository.VerificationTokenRepository;
 import by.kolesa.backend.security.JwtProvider;
+import by.kolesa.backend.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,9 +53,12 @@ public class AuthService {
 
     private final TwilioSmsService twilioSmsService;
 
+    private final UserValidator userValidator;
+
     @Value("${mail.activation.url}")
     private String ACTIVATION_URL;
 
+    @SneakyThrows
     public void signUp(RegisterRequest registerRequest) {
         User user = new User();
         user.setUsername(registerRequest.getUsername());
@@ -70,6 +75,9 @@ public class AuthService {
         user.setCreatedDate(Instant.now());
         user.setEnabled(false);
 
+        if (!userValidator.isValid(user)) {
+            throw new CustomBadRequest(userValidator.parseErrorMessages());
+        }
         userRepository.save(user);
 
         sendActivationCode(user);
