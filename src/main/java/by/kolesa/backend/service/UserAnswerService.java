@@ -6,6 +6,7 @@ import by.kolesa.backend.model.Answer;
 import by.kolesa.backend.model.UserAnswer;
 import by.kolesa.backend.repository.UserAnswerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -22,9 +23,12 @@ public class UserAnswerService {
 
     private final UserService userService;
 
+    @Value("${control.questions.number}")
+    private String CONTROL_QUESTIONS_NUMBER;
+
     public List<UserAnswer> getIncorrectUserAnswersForPersonalizedControl() {
         Long userId = userService.getUserIdOfLoggedIn();
-        return userAnswerRepository.findByAnswerIsCorrectAndUserIdAndForControl(false, userId, 10);
+        return userAnswerRepository.findByAnswerIsCorrectAndUserIdAndForControl(false, userId, Integer.parseInt(CONTROL_QUESTIONS_NUMBER));
     }
 
     public long countCorrectUserAnswers(Long userId) {
@@ -42,7 +46,6 @@ public class UserAnswerService {
             userAnswer.setAnswer(answer);
             Long userId = userService.getUserIdOfLoggedIn();
             userAnswer.setUserId(userId);
-            //separate method
             if (answer.isCorrect()) {
                 List<UserAnswer> incorrectUserAnswersForThisQuestion =
                         userAnswerRepository.findByQuestionIdAndUserIdAndAnswerIsCorrectAndForControl(userAnswerDto.getQuestionId(),

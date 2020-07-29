@@ -14,8 +14,10 @@ import by.kolesa.backend.repository.QuestionRepository;
 import by.kolesa.backend.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,15 +34,31 @@ public class ControlService {
 
     private final UserService userService;
 
+    @Value("${control.questions.number}")
+    private String CONTROL_QUESTIONS_NUMBER_STRING;
+
+    @Value("${control.duration.minutes}")
+    private String CONTROL_DURATION_IN_MINUTES_STRING;
+
+    private int CONTROL_QUESTIONS_NUMBER;
+
+    private int CONTROL_DURATION_IN_MINUTES;
+
+    @PostConstruct
+    private void initIntConstantsFromProperties() {
+        CONTROL_QUESTIONS_NUMBER = Integer.parseInt(CONTROL_QUESTIONS_NUMBER_STRING);
+        CONTROL_DURATION_IN_MINUTES = Integer.parseInt(CONTROL_DURATION_IN_MINUTES_STRING);
+    }
+
     public ControlQuestionsDto getControlQuestionsByTopic(Long id) {
-        List<Question> questions = questionRepository.findTopNByTopicId(id, 10);
-        String endTime = DateUtil.getCurrentDatePlusMinutes(15);
+        List<Question> questions = questionRepository.findTopNByTopicId(id, CONTROL_QUESTIONS_NUMBER);
+        String endTime = DateUtil.getCurrentDatePlusMinutes(CONTROL_DURATION_IN_MINUTES);
         return new ControlQuestionsDto(questions, endTime);
     }
 
     public ControlQuestionsDto getRandomControlQuestions() {
-        List<Question> questions = questionRepository.findTopN(10);
-        String endTime = DateUtil.getCurrentDatePlusMinutes(15);
+        List<Question> questions = questionRepository.findTopN(CONTROL_QUESTIONS_NUMBER);
+        String endTime = DateUtil.getCurrentDatePlusMinutes(CONTROL_DURATION_IN_MINUTES);
         return new ControlQuestionsDto(questions, endTime);
     }
 
@@ -49,9 +67,9 @@ public class ControlService {
         List<Question> questions = new ArrayList<>();
         List<UserAnswer> incorrectUserAnswers = userAnswerService.getIncorrectUserAnswersForPersonalizedControl();
         int actualSize = incorrectUserAnswers.size();
-        if (actualSize < 10) {
-            int remainingQuestionsCount = 10 - actualSize;
-            if (remainingQuestionsCount == 10) {
+        if (actualSize < CONTROL_QUESTIONS_NUMBER) {
+            int remainingQuestionsCount = CONTROL_QUESTIONS_NUMBER - actualSize;
+            if (remainingQuestionsCount == CONTROL_QUESTIONS_NUMBER) {
                 throw new IncorrectUserAnswersNotFoundException();
             }
             questions.addAll(questionRepository.findTopN(remainingQuestionsCount));
@@ -60,7 +78,7 @@ public class ControlService {
             Question question = questionRepository.findById(incorrectUserAnswer.getQuestionId()).orElseThrow(QuestionNotFoundException::new);
             questions.add(question);
         }
-        String endTime = DateUtil.getCurrentDatePlusMinutes(15);
+        String endTime = DateUtil.getCurrentDatePlusMinutes(CONTROL_DURATION_IN_MINUTES);
         return new ControlQuestionsDto(questions, endTime);
     }
 
