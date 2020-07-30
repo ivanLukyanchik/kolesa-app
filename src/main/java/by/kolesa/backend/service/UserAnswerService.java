@@ -41,19 +41,23 @@ public class UserAnswerService {
         List<UserAnswer> answers = new ArrayList<>();
         for (UserAnswerDto userAnswerDto : controlAnswersDto.getUserAnswers()) {
             userAnswer = new UserAnswer();
-            userAnswer.setQuestionId(userAnswerDto.getQuestionId());
-            Answer answer = answerService.getAnswerById(userAnswerDto.getAnswerId());
-            userAnswer.setAnswer(answer);
             Long userId = userService.getUserIdOfLoggedIn();
             userAnswer.setUserId(userId);
-            if (answer.isCorrect()) {
-                List<UserAnswer> incorrectUserAnswersForThisQuestion =
-                        userAnswerRepository.findByQuestionIdAndUserIdAndAnswerIsCorrectAndForControl(userAnswerDto.getQuestionId(),
-                                userId, false, true);
-                for (UserAnswer incorrectUserAnswer : incorrectUserAnswersForThisQuestion) {
-                    incorrectUserAnswer.setForControl(false);
-                    userAnswerRepository.save(incorrectUserAnswer);
+            userAnswer.setQuestionId(userAnswerDto.getQuestionId());
+            if (userAnswerDto.getAnswerId() != null) {
+                Answer answer = answerService.getAnswerById(userAnswerDto.getAnswerId());
+                userAnswer.setAnswer(answer);
+                if (answer.isCorrect()) {
+                    List<UserAnswer> incorrectUserAnswersForThisQuestion =
+                            userAnswerRepository.findByQuestionIdAndUserIdAndAnswerIsCorrectAndForControl(userAnswerDto.getQuestionId(),
+                                    userId, false, true);
+                    for (UserAnswer incorrectUserAnswer : incorrectUserAnswersForThisQuestion) {
+                        incorrectUserAnswer.setForControl(false);
+                        userAnswerRepository.save(incorrectUserAnswer);
+                    }
                 }
+            } else {
+                userAnswer.setAnswer(null);
             }
             answers.add(userAnswer);
         }
