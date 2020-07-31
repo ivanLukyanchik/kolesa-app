@@ -1,5 +1,6 @@
 package by.kolesa.backend.dto;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RegisterRequest {
 
+    @ApiModelProperty(value = "Either email or phone must be specified")
     private String email;
 
     private String phone;
