@@ -16,7 +16,7 @@ public interface UserAnswerRepository extends CrudRepository<UserAnswer, Long> {
 
     long countByAnswerIsCorrectAndUserId(boolean isCorrect, Long userId);
 
-    long countByUserId(Long userId);
+    long countByUserIdAndAnswerNotNull(Long userId);
 
     List<UserAnswer> findByQuestionIdAndUserIdAndAnswerIsCorrectAndForControl(Long questionId, Long userId, boolean isCorrect, boolean forControl);
 

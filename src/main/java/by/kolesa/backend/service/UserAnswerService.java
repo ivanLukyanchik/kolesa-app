@@ -65,7 +65,7 @@ public class UserAnswerService {
     }
 
     public long countAllUserAnswers(Long userId) {
-        return userAnswerRepository.countByUserId(userId);
+        return userAnswerRepository.countByUserIdAndAnswerNotNull(userId);
     }
 
 }
