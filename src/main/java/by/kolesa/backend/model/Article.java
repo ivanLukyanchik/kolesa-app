@@ -1,10 +1,12 @@
 package by.kolesa.backend.model;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,5 +26,9 @@ public class Article {
     private Long id;
 
     private String text;
+
+    @ApiModelProperty(value = "Can be null")
+    @Column(name = "LINK_TO_IMG")
+    private String linkToImage;
 
 }
