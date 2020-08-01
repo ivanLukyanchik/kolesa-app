@@ -33,10 +33,7 @@ public class Question {
 
     @Column(name = "LINK_TO_IMG")
     private String linkToImage;
-
-    @Column(name = "ANSWERS_COUNT")
-    private int answersCount;
-
+    
     @Column(name = "TOPIC_ID")
     private Long topicId;
 
