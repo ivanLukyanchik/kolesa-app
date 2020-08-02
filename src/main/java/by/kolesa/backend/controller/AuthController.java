@@ -37,7 +37,7 @@ public class AuthController {
 
     @SneakyThrows
     @PostMapping("/signUp")
-    public ResponseEntity<String> signUp(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<String> signUp(@Valid @RequestBody RegisterRequest registerRequest) {
         if (!registerRequestValidator.isValid(registerRequest)) {
             throw new CustomBadRequest();
         }

@@ -32,7 +32,6 @@ public class User {
     private String username;
 
     @NotBlank(message = "Password is required")
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", message = "Minimum eight characters, at least one letter and one number for password")
     private String password;
 
     @Email
