@@ -73,7 +73,7 @@ public class AuthService {
         }
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setCreatedDate(Instant.now());
-        user.setEnabled(false);
+        user.setEnabled(true);
 
         if (!userValidator.isValid(user)) {
             throw new CustomBadRequest(userValidator.parseErrorMessages());
