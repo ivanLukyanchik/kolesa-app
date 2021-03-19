@@ -28,7 +28,7 @@ public class User {
     private Long id;
 
     @NotBlank(message = "Username is required")
-    @Pattern(regexp = "^[a-zA-Z]\\w{3,15}$", message = "4-16 word characters for username")
+//    @Pattern(regexp = "^[a-zA-Z]\\w{3,15}$", message = "4-16 word characters for username")
     private String username;
 
     @NotBlank(message = "Password is required")
