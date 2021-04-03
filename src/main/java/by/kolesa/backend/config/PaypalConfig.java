@@ -13,32 +13,32 @@ import java.util.Map;
 @Configuration
 public class PaypalConfig {
 
-    @Value("${paypal.client.id}")
-    private String clientId;
+  @Value("${paypal.client.id}")
+  private String clientId;
 
-    @Value("${paypal.client.secret}")
-    private String clientSecret;
+  @Value("${paypal.client.secret}")
+  private String clientSecret;
 
-    @Value("${paypal.mode}")
-    private String mode;
+  @Value("${paypal.mode}")
+  private String mode;
 
-    @Bean
-    public Map<String, String> paypalSdkConfig() {
-        Map<String, String> configMap = new HashMap<>();
-        configMap.put("mode", mode);
-        return configMap;
-    }
+  @Bean
+  public Map<String, String> paypalSdkConfig() {
+    Map<String, String> configMap = new HashMap<>();
+    configMap.put("mode", mode);
+    return configMap;
+  }
 
-    @Bean
-    public OAuthTokenCredential oAuthTokenCredential() {
-        return new OAuthTokenCredential(clientId, clientSecret, paypalSdkConfig());
-    }
+  @Bean
+  public OAuthTokenCredential oAuthTokenCredential() {
+    return new OAuthTokenCredential(clientId, clientSecret, paypalSdkConfig());
+  }
 
-    @SneakyThrows
-    @Bean
-    public APIContext apiContext() {
-        APIContext context = new APIContext(clientId, clientSecret, mode);
-        context.setConfigurationMap(paypalSdkConfig());
-        return context;
-    }
+  @SneakyThrows
+  @Bean
+  public APIContext apiContext() {
+    APIContext context = new APIContext(clientId, clientSecret, mode);
+    context.setConfigurationMap(paypalSdkConfig());
+    return context;
+  }
 }

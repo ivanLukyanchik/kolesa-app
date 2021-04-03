@@ -19,36 +19,35 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ControlController {
 
-    private final ControlService controlService;
+  private final ControlService controlService;
 
-    @GetMapping("/topic/{id}")
-    public ControlQuestionsDto getControlQuestionsByTopic(@PathVariable Long id) {
-        return controlService.getControlQuestionsByTopic(id);
-    }
+  @GetMapping("/topic/{id}")
+  public ControlQuestionsDto getControlQuestionsByTopic(@PathVariable Long id) {
+    return controlService.getControlQuestionsByTopic(id);
+  }
 
-    @GetMapping("/random")
-    public ControlQuestionsDto getRandomControlQuestions() {
-        return controlService.getRandomControlQuestions();
-    }
+  @GetMapping("/random")
+  public ControlQuestionsDto getRandomControlQuestions() {
+    return controlService.getRandomControlQuestions();
+  }
 
-    @GetMapping("/personalized")
-    public ControlQuestionsDto getControlQuestionsBasedOnIncorrectAnswers() {
-        return controlService.getControlQuestionsBasedOnIncorrectAnswers();
-    }
+  @GetMapping("/personalized")
+  public ControlQuestionsDto getControlQuestionsBasedOnIncorrectAnswers() {
+    return controlService.getControlQuestionsBasedOnIncorrectAnswers();
+  }
 
-    @GetMapping("/percentage")
-    public String calculatePercentageOfCorrectAnswers() {
-        return controlService.calculatePercentageOfCorrectAnswers();
-    }
+  @GetMapping("/percentage")
+  public String calculatePercentageOfCorrectAnswers() {
+    return controlService.calculatePercentageOfCorrectAnswers();
+  }
 
-    @PostMapping
-    public void saveControlUserAnswers(@RequestBody ControlAnswersDto controlAnswersDto) {
-        controlService.saveControlUserAnswers(controlAnswersDto);
-    }
+  @PostMapping
+  public void saveControlUserAnswers(@RequestBody ControlAnswersDto controlAnswersDto) {
+    controlService.saveControlUserAnswers(controlAnswersDto);
+  }
 
-    @GetMapping
-    public List<ControlResultDto> getPassedControlsForLoggedInUser() {
-        return controlService.getPassedControlsForLoggedInUser();
-    }
-
+  @GetMapping
+  public List<ControlResultDto> getPassedControlsForLoggedInUser() {
+    return controlService.getPassedControlsForLoggedInUser();
+  }
 }

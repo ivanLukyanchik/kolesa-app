@@ -12,8 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 public class ControlQuestionsDto {
 
-    private List<Question> questions;
-
-    private String endTime;
-
+  private List<Question> questions;
+  private String endTime;
 }

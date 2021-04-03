@@ -24,16 +24,15 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Table(name = "PASSWORD_RESET_TOKENS")
 public class PasswordResetToken {
 
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = IDENTITY)
+  private Long id;
 
-    private String token;
+  private String token;
 
-    @OneToOne(fetch = LAZY)
-    private User user;
+  @OneToOne(fetch = LAZY)
+  private User user;
 
-    @Column(name = "EXPIRY_DATE")
-    private Instant expiryDate;
-
+  @Column(name = "EXPIRY_DATE")
+  private Instant expiryDate;
 }

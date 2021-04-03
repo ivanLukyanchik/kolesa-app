@@ -29,42 +29,42 @@ import static org.springframework.http.HttpStatus.OK;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthService authService;
+  private final AuthService authService;
+  private final RefreshTokenService refreshTokenService;
+  private final RegisterRequestValidator registerRequestValidator;
 
-    private final RefreshTokenService refreshTokenService;
-
-    private final RegisterRequestValidator registerRequestValidator;
-
-    @SneakyThrows
-    @PostMapping("/signUp")
-    public ResponseEntity<String> signUp(@Valid @RequestBody RegisterRequest registerRequest) {
-        if (!registerRequestValidator.isValid(registerRequest)) {
-            throw new CustomBadRequest();
-        }
-        authService.signUp(registerRequest);
-        return new ResponseEntity<>("User Registered successfully", OK);
+  @SneakyThrows
+  @PostMapping("/signUp")
+  public ResponseEntity<String> signUp(@Valid @RequestBody RegisterRequest registerRequest) {
+    if (!registerRequestValidator.isValid(registerRequest)) {
+      throw new CustomBadRequest();
     }
+    authService.signUp(registerRequest);
+    return new ResponseEntity<>("User Registered successfully", OK);
+  }
 
-    @GetMapping("/verify/{token}")
-    public ResponseEntity<String> verifyAccount(@PathVariable String token) throws UserNotFoundException, InvalidTokenException {
-        authService.verifyAccount(token);
-        return new ResponseEntity<>("Account Activated Successfully", OK);
-    }
+  @GetMapping("/verify/{token}")
+  public ResponseEntity<String> verifyAccount(@PathVariable String token)
+      throws UserNotFoundException, InvalidTokenException {
+    authService.verifyAccount(token);
+    return new ResponseEntity<>("Account Activated Successfully", OK);
+  }
 
-    @PostMapping("/login")
-    public AuthenticationResponse login(@RequestBody LoginRequest loginRequest) {
-        return authService.login(loginRequest);
-    }
+  @PostMapping("/login")
+  public AuthenticationResponse login(@RequestBody LoginRequest loginRequest) {
+    return authService.login(loginRequest);
+  }
 
-    @PostMapping("/refresh/token")
-    public AuthenticationResponse refreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
-        return authService.refreshToken(refreshTokenRequest);
-    }
+  @PostMapping("/refresh/token")
+  public AuthenticationResponse refreshToken(
+      @Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
+    return authService.refreshToken(refreshTokenRequest);
+  }
 
-    @PostMapping("/logout")
-    public ResponseEntity<String> logout(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
-        refreshTokenService.deleteRefreshToken(refreshTokenRequest.getRefreshToken());
-        return ResponseEntity.status(OK).body("Refresh token deleted successfully");
-    }
-
+  @PostMapping("/logout")
+  public ResponseEntity<String> logout(
+      @Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
+    refreshTokenService.deleteRefreshToken(refreshTokenRequest.getRefreshToken());
+    return ResponseEntity.status(OK).body("Refresh token deleted successfully");
+  }
 }

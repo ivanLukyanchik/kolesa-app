@@ -14,21 +14,21 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AnswerService {
 
-    private final AnswerRepository answerRepository;
+  private final AnswerRepository answerRepository;
 
-    public List<Answer> getAllAnswers() {
-        List<Answer> answers = new ArrayList<>();
-        answerRepository.findAll().forEach(answers::add);
-        return answers;
-    }
+  public List<Answer> getAllAnswers() {
+    List<Answer> answers = new ArrayList<>();
+    answerRepository.findAll().forEach(answers::add);
+    return answers;
+  }
 
-    @SneakyThrows
-    public Answer getAnswer(Long id) {
-        return answerRepository.findById(id).orElseThrow(AnswerNotFoundException::new);
-    }
+  @SneakyThrows
+  public Answer getAnswer(Long id) {
+    return answerRepository.findById(id).orElseThrow(AnswerNotFoundException::new);
+  }
 
-    @SneakyThrows
-    public Answer getAnswerById(Long id) {
-        return answerRepository.findById(id).orElseThrow(AnswerNotFoundException::new);
-    }
+  @SneakyThrows
+  public Answer getAnswerById(Long id) {
+    return answerRepository.findById(id).orElseThrow(AnswerNotFoundException::new);
+  }
 }

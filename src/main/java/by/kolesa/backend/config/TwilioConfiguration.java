@@ -13,15 +13,15 @@ import javax.annotation.PostConstruct;
 @Data
 public class TwilioConfiguration {
 
-    @Value("${twilio.account_sid}")
-    private String ACCOUNT_SID;
+  @Value("${twilio.account_sid}")
+  private String accountSid;
 
-    @Value("${twilio.auth_token}")
-    private String AUTH_TOKEN;
+  @Value("${twilio.auth_token}")
+  private String authToken;
 
-    @PostConstruct
-    public void init() {
-        Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
-        log.info("Twilio initialized ... with account sid " + ACCOUNT_SID);
-    }
+  @PostConstruct
+  public void init() {
+    Twilio.init(accountSid, authToken);
+    log.info("Twilio initialized ... with account sid " + accountSid);
+  }
 }

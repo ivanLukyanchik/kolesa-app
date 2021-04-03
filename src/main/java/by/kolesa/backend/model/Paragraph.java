@@ -26,22 +26,21 @@ import java.util.List;
 @Table(name = "PARAGRAPHS")
 public class Paragraph {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private String text;
+  private String text;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="CHAPTER_ID")
-    private Chapter chapter;
+  @ManyToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "CHAPTER_ID")
+  private Chapter chapter;
 
-    @ApiModelProperty(value = "Can be null")
-    @Column(name = "LINK_TO_IMG")
-    private String linkToImage;
+  @ApiModelProperty(value = "Can be null")
+  @Column(name = "LINK_TO_IMG")
+  private String linkToImage;
 
-    @OneToMany
-    @JoinColumn(name="PARAGRAPH_ID")
-    private List<Article> articles;
-
+  @OneToMany
+  @JoinColumn(name = "PARAGRAPH_ID")
+  private List<Article> articles;
 }

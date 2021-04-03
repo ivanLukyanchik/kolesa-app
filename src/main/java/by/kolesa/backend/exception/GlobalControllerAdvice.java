@@ -22,36 +22,51 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @RequiredArgsConstructor
 public class GlobalControllerAdvice {
 
-    @ExceptionHandler({HttpClientErrorException.BadRequest.class, CustomBadRequest.class, MethodArgumentTypeMismatchException.class})
-    public ResponseEntity<String> handleBadRequestException(Exception ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-    }
+  @ExceptionHandler({
+    HttpClientErrorException.BadRequest.class,
+    CustomBadRequest.class,
+    MethodArgumentTypeMismatchException.class
+  })
+  public ResponseEntity<String> handleBadRequestException(Exception ex) {
+    return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+  }
 
-    @ExceptionHandler({UserNotFoundException.class, AnswerNotFoundException.class, IncorrectUserAnswersNotFoundException.class})
-    public ResponseEntity<String> handleUserNotFoundException(Exception ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-    }
+  @ExceptionHandler({
+    UserNotFoundException.class,
+    AnswerNotFoundException.class,
+    IncorrectUserAnswersNotFoundException.class
+  })
+  public ResponseEntity<String> handleUserNotFoundException(Exception ex) {
+    return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+  }
 
-    @ExceptionHandler({SendMailException.class, LoadingKeystoreException.class, PayPalRESTException.class,
-            AuthenticationException.class, InvalidRequestException.class, APIConnectionException.class,
-            CardException.class, APIException.class, StripeException.class})
-    public ResponseEntity<String> handleSendMailException(Exception ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+  @ExceptionHandler({
+    SendMailException.class,
+    LoadingKeystoreException.class,
+    PayPalRESTException.class,
+    AuthenticationException.class,
+    InvalidRequestException.class,
+    APIConnectionException.class,
+    CardException.class,
+    APIException.class,
+    StripeException.class
+  })
+  public ResponseEntity<String> handleSendMailException(Exception ex) {
+    return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+  }
 
-    @ExceptionHandler({InvalidTokenException.class, UserNotLoggedInException.class})
-    public ResponseEntity<String> handleInvalidTokenException(Exception ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
-    }
+  @ExceptionHandler({InvalidTokenException.class, UserNotLoggedInException.class})
+  public ResponseEntity<String> handleInvalidTokenException(Exception ex) {
+    return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
+  }
 
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<String> handleBadCredentialsException(Exception ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
-    }
+  @ExceptionHandler(BadCredentialsException.class)
+  public ResponseEntity<String> handleBadCredentialsException(Exception ex) {
+    return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
+  }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleAll(Exception ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
+  @ExceptionHandler(Exception.class)
+  public ResponseEntity<String> handleAll(Exception ex) {
+    return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+  }
 }

@@ -12,12 +12,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChapterService {
 
-    private final ChapterRepository chapterRepository;
+  private final ChapterRepository chapterRepository;
 
-    public List<Chapter> getAllChapters() {
-        List<Chapter> chapters = new ArrayList<>();
-        chapterRepository.findAll().forEach(chapters::add);
-        return chapters;
-    }
-
+  public List<Chapter> getAllChapters() {
+    List<Chapter> chapters = new ArrayList<>();
+    chapterRepository.findAll().forEach(chapters::add);
+    return chapters;
+  }
 }

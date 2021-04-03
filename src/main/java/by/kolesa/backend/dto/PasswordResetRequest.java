@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PasswordResetRequest {
 
-    private String email;
-
-    private String phoneNumber;
-
+  private String email;
+  private String phoneNumber;
 }

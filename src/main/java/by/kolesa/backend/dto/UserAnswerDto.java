@@ -10,9 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserAnswerDto {
 
-    private Long questionId;
+  private Long questionId;
 
-    @ApiModelProperty(value = "Null if user didn't answer to this question")
-    private Long answerId;
-
+  @ApiModelProperty(value = "Null if user didn't answer to this question")
+  private Long answerId;
 }

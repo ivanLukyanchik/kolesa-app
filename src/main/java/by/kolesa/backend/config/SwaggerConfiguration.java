@@ -15,24 +15,25 @@ import java.util.Collections;
 @EnableSwagger2
 public class SwaggerConfiguration {
 
-    @Bean
-    public Docket swaggerConfig() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .select()
-                .apis(RequestHandlerSelectors.basePackage("by.kolesa.backend"))
-                .build()
-                .apiInfo(createApiInfo());
-    }
+  @Bean
+  public Docket swaggerConfig() {
+    return new Docket(DocumentationType.SWAGGER_2)
+        .select()
+        .apis(RequestHandlerSelectors.basePackage("by.kolesa.backend"))
+        .build()
+        .apiInfo(createApiInfo());
+  }
 
-    private ApiInfo createApiInfo() {
-        return new ApiInfo(
-                "Kolesa API",
-                "API for best quiz application for passing tests according to the rules of the road",
-                "1.0",
-                "Free to use",
-                new Contact("Vanya Luk", "https://www.linkedin.com/in/ivan-lukyanchik/", "vanek17121999@gmail.com"),
-                "API License", "VanyaLuk",
-                Collections.EMPTY_LIST
-        );
-    }
+  private ApiInfo createApiInfo() {
+    return new ApiInfo(
+        "Kolesa API",
+        "API for best quiz application for passing tests according to the rules of the road",
+        "1.0",
+        "Free to use",
+        new Contact(
+            "Vanya Luk", "https://www.linkedin.com/in/ivan-lukyanchik/", "vanek17121999@gmail.com"),
+        "API License",
+        "VanyaLuk",
+        Collections.emptyList());
+  }
 }

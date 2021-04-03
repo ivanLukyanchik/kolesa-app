@@ -26,109 +26,112 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ControlService {
 
-    private final QuestionRepository questionRepository;
+  private final QuestionRepository questionRepository;
+  private final ControlRepository controlRepository;
+  private final UserAnswerService userAnswerService;
+  private final UserService userService;
 
-    private final ControlRepository controlRepository;
+  @Value("${control.questions.number}")
+  private String CONTROL_QUESTIONS_NUMBER_STRING;
 
-    private final UserAnswerService userAnswerService;
+  @Value("${control.duration.minutes}")
+  private String CONTROL_DURATION_IN_MINUTES_STRING;
 
-    private final UserService userService;
+  private int CONTROL_QUESTIONS_NUMBER;
 
-    @Value("${control.questions.number}")
-    private String CONTROL_QUESTIONS_NUMBER_STRING;
+  private int CONTROL_DURATION_IN_MINUTES;
 
-    @Value("${control.duration.minutes}")
-    private String CONTROL_DURATION_IN_MINUTES_STRING;
+  @PostConstruct
+  private void initIntConstantsFromProperties() {
+    CONTROL_QUESTIONS_NUMBER = Integer.parseInt(CONTROL_QUESTIONS_NUMBER_STRING);
+    CONTROL_DURATION_IN_MINUTES = Integer.parseInt(CONTROL_DURATION_IN_MINUTES_STRING);
+  }
 
-    private int CONTROL_QUESTIONS_NUMBER;
+  public ControlQuestionsDto getControlQuestionsByTopic(Long id) {
+    List<Question> questions = questionRepository.findTopNByTopicId(id, CONTROL_QUESTIONS_NUMBER);
+    String endTime = DateUtil.getCurrentDatePlusMinutes(CONTROL_DURATION_IN_MINUTES);
+    return new ControlQuestionsDto(questions, endTime);
+  }
 
-    private int CONTROL_DURATION_IN_MINUTES;
+  public ControlQuestionsDto getRandomControlQuestions() {
+    List<Question> questions = questionRepository.findTopN(CONTROL_QUESTIONS_NUMBER);
+    String endTime = DateUtil.getCurrentDatePlusMinutes(CONTROL_DURATION_IN_MINUTES);
+    return new ControlQuestionsDto(questions, endTime);
+  }
 
-    @PostConstruct
-    private void initIntConstantsFromProperties() {
-        CONTROL_QUESTIONS_NUMBER = Integer.parseInt(CONTROL_QUESTIONS_NUMBER_STRING);
-        CONTROL_DURATION_IN_MINUTES = Integer.parseInt(CONTROL_DURATION_IN_MINUTES_STRING);
+  @SneakyThrows
+  public ControlQuestionsDto getControlQuestionsBasedOnIncorrectAnswers() {
+    List<Question> questions = new ArrayList<>();
+    List<UserAnswer> incorrectUserAnswers =
+        userAnswerService.getIncorrectUserAnswersForPersonalizedControl();
+    int actualSize = incorrectUserAnswers.size();
+    if (actualSize < CONTROL_QUESTIONS_NUMBER) {
+      int remainingQuestionsCount = CONTROL_QUESTIONS_NUMBER - actualSize;
+      if (remainingQuestionsCount == CONTROL_QUESTIONS_NUMBER) {
+        throw new IncorrectUserAnswersNotFoundException();
+      }
+      questions.addAll(questionRepository.findTopN(remainingQuestionsCount));
     }
-
-    public ControlQuestionsDto getControlQuestionsByTopic(Long id) {
-        List<Question> questions = questionRepository.findTopNByTopicId(id, CONTROL_QUESTIONS_NUMBER);
-        String endTime = DateUtil.getCurrentDatePlusMinutes(CONTROL_DURATION_IN_MINUTES);
-        return new ControlQuestionsDto(questions, endTime);
+    for (UserAnswer incorrectUserAnswer : incorrectUserAnswers) {
+      Question question =
+          questionRepository
+              .findById(incorrectUserAnswer.getQuestionId())
+              .orElseThrow(QuestionNotFoundException::new);
+      questions.add(question);
     }
+    String endTime = DateUtil.getCurrentDatePlusMinutes(CONTROL_DURATION_IN_MINUTES);
+    return new ControlQuestionsDto(questions, endTime);
+  }
 
-    public ControlQuestionsDto getRandomControlQuestions() {
-        List<Question> questions = questionRepository.findTopN(CONTROL_QUESTIONS_NUMBER);
-        String endTime = DateUtil.getCurrentDatePlusMinutes(CONTROL_DURATION_IN_MINUTES);
-        return new ControlQuestionsDto(questions, endTime);
+  @Transactional
+  public void saveControlUserAnswers(ControlAnswersDto controlAnswersDto) {
+    Control control = buildControl(controlAnswersDto);
+    List<UserAnswer> userAnswers = userAnswerService.getUserAnswersFromDto(controlAnswersDto);
+    for (UserAnswer userAnswer : userAnswers) {
+      control.addUserAnswer(userAnswer);
     }
+    controlRepository.save(control);
+  }
 
-    @SneakyThrows
-    public ControlQuestionsDto getControlQuestionsBasedOnIncorrectAnswers() {
-        List<Question> questions = new ArrayList<>();
-        List<UserAnswer> incorrectUserAnswers = userAnswerService.getIncorrectUserAnswersForPersonalizedControl();
-        int actualSize = incorrectUserAnswers.size();
-        if (actualSize < CONTROL_QUESTIONS_NUMBER) {
-            int remainingQuestionsCount = CONTROL_QUESTIONS_NUMBER - actualSize;
-            if (remainingQuestionsCount == CONTROL_QUESTIONS_NUMBER) {
-                throw new IncorrectUserAnswersNotFoundException();
-            }
-            questions.addAll(questionRepository.findTopN(remainingQuestionsCount));
-        }
-        for (UserAnswer incorrectUserAnswer : incorrectUserAnswers) {
-            Question question = questionRepository.findById(incorrectUserAnswer.getQuestionId()).orElseThrow(QuestionNotFoundException::new);
-            questions.add(question);
-        }
-        String endTime = DateUtil.getCurrentDatePlusMinutes(CONTROL_DURATION_IN_MINUTES);
-        return new ControlQuestionsDto(questions, endTime);
+  @SneakyThrows
+  public List<ControlResultDto> getPassedControlsForLoggedInUser() {
+    List<ControlResultDto> controlResults = new ArrayList<>();
+    ControlResultDto controlResultDto;
+    Long userId = userService.getUserIdOfLoggedIn();
+    List<Control> controls = controlRepository.findByUserId(userId);
+    for (Control control : controls) {
+      controlResultDto = new ControlResultDto();
+      controlResultDto.setDurationInSeconds(control.getDurationInSeconds());
+      List<UserAnswer> userAnswers = control.getUserAnswers();
+      List<AnswerResultDto> answerResults = new ArrayList<>();
+      for (UserAnswer userAnswer : userAnswers) {
+        AnswerResultDto answerResultDto = new AnswerResultDto();
+        answerResultDto.setQuestion(
+            questionRepository
+                .findById(userAnswer.getQuestionId())
+                .orElseThrow(QuestionNotFoundException::new));
+        answerResultDto.setAnswer(userAnswer.getAnswer());
+        answerResults.add(answerResultDto);
+      }
+      controlResultDto.setAnswers(answerResults);
+      controlResults.add(controlResultDto);
     }
+    return controlResults;
+  }
 
-    @Transactional
-    public void saveControlUserAnswers(ControlAnswersDto controlAnswersDto) {
-        Control control = buildControl(controlAnswersDto);
-        List<UserAnswer> userAnswers = userAnswerService.getUserAnswersFromDto(controlAnswersDto);
-        for (UserAnswer userAnswer : userAnswers) {
-            control.addUserAnswer(userAnswer);
-        }
-        controlRepository.save(control);
-    }
+  public String calculatePercentageOfCorrectAnswers() {
+    Long userId = userService.getUserIdOfLoggedIn();
+    long allUserAnswersCount = userAnswerService.countAllUserAnswers(userId);
+    long correctUserAnswersCount = userAnswerService.countCorrectUserAnswers(userId);
+    double percentage = ((double) correctUserAnswersCount / allUserAnswersCount) * 100;
+    return String.format("%.2f", percentage);
+  }
 
-    @SneakyThrows
-    public List<ControlResultDto> getPassedControlsForLoggedInUser() {
-        List<ControlResultDto> controlResults = new ArrayList<>();
-        ControlResultDto controlResultDto;
-        Long userId = userService.getUserIdOfLoggedIn();
-        List<Control> controls = controlRepository.findByUserId(userId);
-        for (Control control : controls) {
-            controlResultDto = new ControlResultDto();
-            controlResultDto.setDurationInSeconds(control.getDurationInSeconds());
-            List<UserAnswer> userAnswers = control.getUserAnswers();
-            List<AnswerResultDto> answerResults = new ArrayList<>();
-            for (UserAnswer userAnswer : userAnswers) {
-                AnswerResultDto answerResultDto = new AnswerResultDto();
-                answerResultDto.setQuestion(questionRepository.findById(userAnswer.getQuestionId()).orElseThrow(QuestionNotFoundException::new));
-                answerResultDto.setAnswer(userAnswer.getAnswer());
-                answerResults.add(answerResultDto);
-            }
-            controlResultDto.setAnswers(answerResults);
-            controlResults.add(controlResultDto);
-        }
-        return controlResults;
-    }
-
-    public String calculatePercentageOfCorrectAnswers() {
-        Long userId = userService.getUserIdOfLoggedIn();
-        long allUserAnswersCount = userAnswerService.countAllUserAnswers(userId);
-        long correctUserAnswersCount = userAnswerService.countCorrectUserAnswers(userId);
-        double percentage = ((double) correctUserAnswersCount / allUserAnswersCount )*100;
-        return String.format("%.2f", percentage);
-    }
-
-    public Control buildControl(ControlAnswersDto controlAnswersDto) {
-        return Control.builder()
-                .durationInSeconds(controlAnswersDto.getDurationInSeconds())
-                .userAnswers(new ArrayList<>())
-                .userId(userService.getUserIdOfLoggedIn())
-                .build();
-    }
-
+  public Control buildControl(ControlAnswersDto controlAnswersDto) {
+    return Control.builder()
+        .durationInSeconds(controlAnswersDto.getDurationInSeconds())
+        .userAnswers(new ArrayList<>())
+        .userId(userService.getUserIdOfLoggedIn())
+        .build();
+  }
 }

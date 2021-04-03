@@ -20,13 +20,12 @@ import javax.persistence.Table;
 @Table(name = "ANSWERS")
 public class Answer {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
-    private String text;
+  private String text;
 
-    @Column(name = "is_correct")
-    private boolean isCorrect;
-
+  @Column(name = "is_correct")
+  private boolean isCorrect;
 }

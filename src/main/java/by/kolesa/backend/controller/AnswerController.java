@@ -18,18 +18,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AnswerController {
 
-    private final AnswerService answerService;
+  private final AnswerService answerService;
 
-    @ApiOperation(value = "This is only for developing purpose", hidden = true)
-    @GetMapping
-    public List<Answer> getAllAnswers() {
-        return answerService.getAllAnswers();
-    }
+  @ApiOperation(value = "This is only for developing purpose", hidden = true)
+  @GetMapping
+  public List<Answer> getAllAnswers() {
+    return answerService.getAllAnswers();
+  }
 
-    @ApiOperation(value = "This is only for developing purpose", hidden = true)
-    @GetMapping("/{id}")
-    public Answer getAnswerById(@PathVariable Long id) {
-        return answerService.getAnswer(id);
-    }
-
+  @ApiOperation(value = "This is only for developing purpose", hidden = true)
+  @GetMapping("/{id}")
+  public Answer getAnswerById(@PathVariable Long id) {
+    return answerService.getAnswer(id);
+  }
 }

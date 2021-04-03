@@ -16,22 +16,21 @@ import java.util.UUID;
 @Transactional
 public class RefreshTokenService {
 
-    private final RefreshTokenRepository refreshTokenRepository;
+  private final RefreshTokenRepository refreshTokenRepository;
 
-    public RefreshToken generateRefreshToken() {
-        RefreshToken refreshToken = new RefreshToken();
-        refreshToken.setToken(UUID.randomUUID().toString());
-        refreshToken.setCreatedDate(Instant.now());
-        return refreshTokenRepository.save(refreshToken);
-    }
+  public RefreshToken generateRefreshToken() {
+    RefreshToken refreshToken = new RefreshToken();
+    refreshToken.setToken(UUID.randomUUID().toString());
+    refreshToken.setCreatedDate(Instant.now());
+    return refreshTokenRepository.save(refreshToken);
+  }
 
-    @SneakyThrows
-    public void validateToken(String token) {
-        refreshTokenRepository.findByToken(token).orElseThrow(InvalidTokenException::new);
-    }
+  @SneakyThrows
+  public void validateToken(String token) {
+    refreshTokenRepository.findByToken(token).orElseThrow(InvalidTokenException::new);
+  }
 
-    public void deleteRefreshToken(String token) {
-        refreshTokenRepository.deleteByToken(token);
-    }
-
+  public void deleteRefreshToken(String token) {
+    refreshTokenRepository.deleteByToken(token);
+  }
 }

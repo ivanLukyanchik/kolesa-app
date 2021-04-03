@@ -9,18 +9,17 @@ import org.thymeleaf.context.Context;
 @RequiredArgsConstructor
 public class MailContentBuilder {
 
-    private final TemplateEngine templateEngine;
+  private final TemplateEngine templateEngine;
 
-    public String buildForSignUp(String message) {
-        Context context = new Context();
-        context.setVariable("message", message);
-        return templateEngine.process("sign-up", context);
-    }
+  public String buildForSignUp(String message) {
+    Context context = new Context();
+    context.setVariable("message", message);
+    return templateEngine.process("sign-up", context);
+  }
 
-    public String buildForPasswordReset(String message) {
-        Context context = new Context();
-        context.setVariable("message", message);
-        return templateEngine.process("password-reset", context);
-    }
-
+  public String buildForPasswordReset(String message) {
+    Context context = new Context();
+    context.setVariable("message", message);
+    return templateEngine.process("password-reset", context);
+  }
 }

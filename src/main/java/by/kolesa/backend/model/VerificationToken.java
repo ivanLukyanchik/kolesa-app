@@ -10,7 +10,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
 import java.time.Instant;
 
 import static javax.persistence.FetchType.LAZY;
@@ -23,16 +22,15 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Table(name = "VERIFICATION_TOKENS")
 public class VerificationToken {
 
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = IDENTITY)
+  private Long id;
 
-    private String token;
+  private String token;
 
-    @OneToOne(fetch = LAZY)
-    private User user;
+  @OneToOne(fetch = LAZY)
+  private User user;
 
-    @Column(name = "EXPIRY_DATE")
-    private Instant expiryDate;
-
+  @Column(name = "EXPIRY_DATE")
+  private Instant expiryDate;
 }

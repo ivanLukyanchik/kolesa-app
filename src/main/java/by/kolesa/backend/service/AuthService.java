@@ -35,124 +35,123 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final PasswordEncoder passwordEncoder;
+  private final PasswordEncoder passwordEncoder;
+  private final UserRepository userRepository;
+  private final VerificationTokenRepository verificationTokenRepository;
+  private final MailContentBuilder mailContentBuilder;
+  private final MailService mailService;
+  private final AuthenticationManager authenticationManager;
+  private final JwtProvider jwtProvider;
+  private final RefreshTokenService refreshTokenService;
+  private final TwilioSmsService twilioSmsService;
+  private final UserValidator userValidator;
 
-    private final UserRepository userRepository;
+  @Value("${mail.activation.url}")
+  private String ACTIVATION_URL;
 
-    private final VerificationTokenRepository verificationTokenRepository;
-
-    private final MailContentBuilder mailContentBuilder;
-
-    private final MailService mailService;
-
-    private final AuthenticationManager authenticationManager;
-
-    private final JwtProvider jwtProvider;
-
-    private final RefreshTokenService refreshTokenService;
-
-    private final TwilioSmsService twilioSmsService;
-
-    private final UserValidator userValidator;
-
-    @Value("${mail.activation.url}")
-    private String ACTIVATION_URL;
-
-    @SneakyThrows
-    public void signUp(RegisterRequest registerRequest) {
-        User user = new User();
-        user.setUsername(registerRequest.getUsername());
-        if (registerRequest.getEmail() != null) {
-            if (!registerRequest.getEmail().isBlank()) {
-                user.setEmail(registerRequest.getEmail());
-                user.setRegisteredByEmail(true);
-            }
-        } else {
-            user.setPhoneNumber(registerRequest.getPhone());
-            user.setRegisteredByEmail(false);
-        }
-        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        user.setCreatedDate(Instant.now());
-        user.setEnabled(true);
-
-        if (!userValidator.isValid(user)) {
-            throw new CustomBadRequest(userValidator.parseErrorMessages());
-        }
-        userRepository.save(user);
-
-        sendActivationCode(user);
+  @SneakyThrows
+  public void signUp(RegisterRequest registerRequest) {
+    User user = new User();
+    user.setUsername(registerRequest.getUsername());
+    if (registerRequest.getEmail() != null) {
+      if (!registerRequest.getEmail().isBlank()) {
+        user.setEmail(registerRequest.getEmail());
+        user.setRegisteredByEmail(true);
+      }
+    } else {
+      user.setPhoneNumber(registerRequest.getPhone());
+      user.setRegisteredByEmail(false);
     }
+    user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+    user.setCreatedDate(Instant.now());
+    user.setEnabled(true);
 
-    @SneakyThrows
-    private void sendActivationCode(User user) {
-        String token;
-        if (user.isRegisteredByEmail()) {
-            token = generateMailVerificationToken(user);
-            String message = mailContentBuilder.buildForSignUp(ACTIVATION_URL + "/" + token);
-            mailService.sendMail(new NotificationEmail("Please Activate your account", user.getEmail(), message));
-        } else {
-            token = generateMobileVerificationToken(user);
-            twilioSmsService.sendSms(new SmsRequest(user.getPhoneNumber(), token + " is your \"Kolesa\" authentication code"));
-        }
+    if (!userValidator.isValid(user)) {
+      throw new CustomBadRequest(userValidator.parseErrorMessages());
     }
+    userRepository.save(user);
 
-    private String generateMailVerificationToken(User user) {
-        String token = UUID.randomUUID().toString();
-        VerificationToken verificationToken = new VerificationToken();
-        verificationToken.setToken(token);
-        verificationToken.setUser(user);
-        verificationTokenRepository.save(verificationToken);
-        return token;
-    }
+    sendActivationCode(user);
+  }
 
-    private String generateMobileVerificationToken(User user) {
-        Random random = new Random();
-        int code = random.nextInt((99999 - 10000) + 1) + 10000;
-        String token = String.valueOf(code);
-        VerificationToken verificationToken = new VerificationToken();
-        verificationToken.setToken(token);
-        verificationToken.setUser(user);
-        verificationTokenRepository.save(verificationToken);
-        return token;
+  @SneakyThrows
+  private void sendActivationCode(User user) {
+    String token;
+    if (user.isRegisteredByEmail()) {
+      token = generateMailVerificationToken(user);
+      String message = mailContentBuilder.buildForSignUp(ACTIVATION_URL + "/" + token);
+      mailService.sendMail(
+          new NotificationEmail("Please Activate your account", user.getEmail(), message));
+    } else {
+      token = generateMobileVerificationToken(user);
+      twilioSmsService.sendSms(
+          new SmsRequest(user.getPhoneNumber(), token + " is your \"Kolesa\" authentication code"));
     }
+  }
 
-    @Transactional
-    public void verifyAccount(String token) throws InvalidTokenException, UserNotFoundException {
-        Optional<VerificationToken> verificationTokenOptional = verificationTokenRepository.findByToken(token);
-        VerificationToken verificationToken = verificationTokenOptional.orElseThrow(InvalidTokenException::new);
-        fetchUserAndEnable(verificationToken);
-        verificationTokenRepository.delete(verificationToken);
-    }
+  private String generateMailVerificationToken(User user) {
+    String token = UUID.randomUUID().toString();
+    VerificationToken verificationToken = new VerificationToken();
+    verificationToken.setToken(token);
+    verificationToken.setUser(user);
+    verificationTokenRepository.save(verificationToken);
+    return token;
+  }
 
-    void fetchUserAndEnable(VerificationToken verificationToken) throws UserNotFoundException {
-        String username = verificationToken.getUser().getUsername();
-        User user = userRepository.findByUsername(username).orElseThrow(() ->
-                new UserNotFoundException("User not found with name : " + username));
-        user.setEnabled(true);
-        userRepository.save(user);
-    }
+  private String generateMobileVerificationToken(User user) {
+    Random random = new Random();
+    int code = random.nextInt((99999 - 10000) + 1) + 10000;
+    String token = String.valueOf(code);
+    VerificationToken verificationToken = new VerificationToken();
+    verificationToken.setToken(token);
+    verificationToken.setUser(user);
+    verificationTokenRepository.save(verificationToken);
+    return token;
+  }
 
-    public AuthenticationResponse login(LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
-                loginRequest.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtProvider.generateToken(authentication);
-        return AuthenticationResponse.builder()
-                .authenticationToken(token)
-                .refreshToken(refreshTokenService.generateRefreshToken().getToken())
-                .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpiration()))
-                .username(loginRequest.getUsername())
-                .build();
-    }
+  @Transactional
+  public void verifyAccount(String token) throws InvalidTokenException, UserNotFoundException {
+    Optional<VerificationToken> verificationTokenOptional =
+        verificationTokenRepository.findByToken(token);
+    VerificationToken verificationToken =
+        verificationTokenOptional.orElseThrow(InvalidTokenException::new);
+    fetchUserAndEnable(verificationToken);
+    verificationTokenRepository.delete(verificationToken);
+  }
 
-    public AuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
-        refreshTokenService.validateToken(refreshTokenRequest.getRefreshToken());
-        String token = jwtProvider.generateTokenWithUsername(refreshTokenRequest.getUsername());
-        return AuthenticationResponse.builder()
-                .username(refreshTokenRequest.getUsername())
-                .refreshToken(refreshTokenRequest.getRefreshToken())
-                .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpiration()))
-                .authenticationToken(token)
-                .build();
-    }
+  void fetchUserAndEnable(VerificationToken verificationToken) throws UserNotFoundException {
+    String username = verificationToken.getUser().getUsername();
+    User user =
+        userRepository
+            .findByUsername(username)
+            .orElseThrow(() -> new UserNotFoundException("User not found with name : " + username));
+    user.setEnabled(true);
+    userRepository.save(user);
+  }
+
+  public AuthenticationResponse login(LoginRequest loginRequest) {
+    Authentication authentication =
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                loginRequest.getUsername(), loginRequest.getPassword()));
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+    String token = jwtProvider.generateToken(authentication);
+    return AuthenticationResponse.builder()
+        .authenticationToken(token)
+        .refreshToken(refreshTokenService.generateRefreshToken().getToken())
+        .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpiration()))
+        .username(loginRequest.getUsername())
+        .build();
+  }
+
+  public AuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
+    refreshTokenService.validateToken(refreshTokenRequest.getRefreshToken());
+    String token = jwtProvider.generateTokenWithUsername(refreshTokenRequest.getUsername());
+    return AuthenticationResponse.builder()
+        .username(refreshTokenRequest.getUsername())
+        .refreshToken(refreshTokenRequest.getRefreshToken())
+        .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpiration()))
+        .authenticationToken(token)
+        .build();
+  }
 }

@@ -9,6 +9,5 @@ import java.util.Optional;
 @Repository
 public interface PasswordResetRepository extends CrudRepository<PasswordResetToken, Long> {
 
-    Optional<PasswordResetToken> findByToken(String token);
-
+  Optional<PasswordResetToken> findByToken(String token);
 }

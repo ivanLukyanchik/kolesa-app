@@ -14,24 +14,25 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TwilioSmsService {
 
-    @Value("${twilio.trial_number}")
-    private String TRIAL_NUMBER;
+  @Value("${twilio.trial_number}")
+  private String TRIAL_NUMBER;
 
-    public void sendSms(SmsRequest smsRequest) {
-        if (isPhoneNumberValid(smsRequest.getPhoneNumber())) {
-            PhoneNumber to = new PhoneNumber(smsRequest.getPhoneNumber());
-            PhoneNumber from = new PhoneNumber(TRIAL_NUMBER);
-            String message = smsRequest.getMessage();
-            MessageCreator creator = Message.creator(to, from, message);
-            creator.create();
-            log.info("Send sms {}", smsRequest);
-        } else {
-            throw new IllegalArgumentException("Phone number [" + smsRequest.getPhoneNumber() + "] is not a valid number");
-        }
+  public void sendSms(SmsRequest smsRequest) {
+    if (isPhoneNumberValid(smsRequest.getPhoneNumber())) {
+      PhoneNumber to = new PhoneNumber(smsRequest.getPhoneNumber());
+      PhoneNumber from = new PhoneNumber(TRIAL_NUMBER);
+      String message = smsRequest.getMessage();
+      MessageCreator creator = Message.creator(to, from, message);
+      creator.create();
+      log.info("Send sms {}", smsRequest);
+    } else {
+      throw new IllegalArgumentException(
+          "Phone number [" + smsRequest.getPhoneNumber() + "] is not a valid number");
     }
+  }
 
-    private boolean isPhoneNumberValid(String phoneNumber) {
-        // TODO: Implement phone number validator
-        return true;
-    }
+  private boolean isPhoneNumberValid(String phoneNumber) {
+    // TODO: Implement phone number validator
+    return true;
+  }
 }

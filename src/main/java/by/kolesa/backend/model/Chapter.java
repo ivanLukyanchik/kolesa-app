@@ -19,10 +19,9 @@ import javax.persistence.Table;
 @Table(name = "CHAPTERS")
 public class Chapter {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private String name;
-
+  private String name;
 }

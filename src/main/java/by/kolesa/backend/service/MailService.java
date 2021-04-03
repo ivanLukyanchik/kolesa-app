@@ -16,24 +16,26 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class MailService {
 
-    private final JavaMailSender mailSender;
+  private final JavaMailSender mailSender;
+  private final MailContentBuilder mailContentBuilder;
 
-    private final MailContentBuilder mailContentBuilder;
-
-    @Async
-    void sendMail(NotificationEmail notificationEmail) throws SendMailException {
-        MimeMessagePreparator messagePreparator = mimeMessage -> {
-            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
-            messageHelper.setFrom("kolesa.app@gmail.com");
-            messageHelper.setTo(notificationEmail.getRecipient());
-            messageHelper.setSubject(notificationEmail.getSubject());
-            messageHelper.setText(mailContentBuilder.buildForSignUp(notificationEmail.getBody()), true);
+  @Async
+  void sendMail(NotificationEmail notificationEmail) throws SendMailException {
+    MimeMessagePreparator messagePreparator =
+        mimeMessage -> {
+          MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+          messageHelper.setFrom("kolesa.app@gmail.com");
+          messageHelper.setTo(notificationEmail.getRecipient());
+          messageHelper.setSubject(notificationEmail.getSubject());
+          messageHelper.setText(
+              mailContentBuilder.buildForSignUp(notificationEmail.getBody()), true);
         };
-        try {
-            mailSender.send(messagePreparator);
-            log.info("Activation email sent to : " + notificationEmail.getRecipient());
-        } catch (MailException e) {
-            throw new SendMailException("Exception occurred when sending mail to " + notificationEmail.getRecipient());
-        }
+    try {
+      mailSender.send(messagePreparator);
+      log.info("Activation email sent to : " + notificationEmail.getRecipient());
+    } catch (MailException e) {
+      throw new SendMailException(
+          "Exception occurred when sending mail to " + notificationEmail.getRecipient());
     }
+  }
 }

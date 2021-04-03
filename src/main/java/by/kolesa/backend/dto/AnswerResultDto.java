@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AnswerResultDto {
 
-    private Question question;
-
-    private Answer answer;
-
+  private Question question;
+  private Answer answer;
 }

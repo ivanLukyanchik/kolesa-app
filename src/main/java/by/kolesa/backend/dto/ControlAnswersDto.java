@@ -11,8 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 public class ControlAnswersDto {
 
-    private List<UserAnswerDto> userAnswers;
-
-    private int durationInSeconds;
-
+  private List<UserAnswerDto> userAnswers;
+  private int durationInSeconds;
 }

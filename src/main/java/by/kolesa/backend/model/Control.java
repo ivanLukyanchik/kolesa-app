@@ -26,22 +26,21 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Table(name = "CONTROLS")
 public class Control {
 
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = IDENTITY)
+  private Long id;
 
-    @OneToMany(cascade= CascadeType.ALL, mappedBy = "control")
-    private List<UserAnswer> userAnswers;
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "control")
+  private List<UserAnswer> userAnswers;
 
-    @Column(name = "DURATION")
-    private int durationInSeconds;
+  @Column(name = "DURATION")
+  private int durationInSeconds;
 
-    @Column(name = "USER_ID")
-    private Long userId;
+  @Column(name = "USER_ID")
+  private Long userId;
 
-    public void addUserAnswer(UserAnswer userAnswer) {
-        this.userAnswers.add(userAnswer);
-        userAnswer.setControl(this);
-    }
-
+  public void addUserAnswer(UserAnswer userAnswer) {
+    this.userAnswers.add(userAnswer);
+    userAnswer.setControl(this);
+  }
 }

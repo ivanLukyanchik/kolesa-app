@@ -18,24 +18,24 @@ import static org.springframework.http.HttpStatus.OK;
 @RequiredArgsConstructor
 public class PasswordResetController {
 
-    private final PasswordResetService passwordResetService;
+  private final PasswordResetService passwordResetService;
+  private final PasswordResetRequestValidator passwordResetRequestValidator;
 
-    private final PasswordResetRequestValidator passwordResetRequestValidator;
-
-    @SneakyThrows
-    @PostMapping("/resetPassword")
-    public ResponseEntity<String> resetPassword(@RequestBody PasswordResetRequest passwordResetRequest) {
-        if (!passwordResetRequestValidator.isValid(passwordResetRequest)) {
-            throw new CustomBadRequest();
-        }
-        String token = passwordResetService.resetPassword(passwordResetRequest);
-        return new ResponseEntity<>("Link to reset password was sent to your account, token = " + token, OK);
+  @SneakyThrows
+  @PostMapping("/resetPassword")
+  public ResponseEntity<String> resetPassword(
+      @RequestBody PasswordResetRequest passwordResetRequest) {
+    if (!passwordResetRequestValidator.isValid(passwordResetRequest)) {
+      throw new CustomBadRequest();
     }
+    String token = passwordResetService.resetPassword(passwordResetRequest);
+    return new ResponseEntity<>(
+        "Link to reset password was sent to your account, token = " + token, OK);
+  }
 
-    @PostMapping("/changePassword")
-    public ResponseEntity<String> changePassword(@RequestBody PasswordResetDto passwordResetDto) {
-        passwordResetService.changePassword(passwordResetDto);
-        return new ResponseEntity<>("Password was successfully restored", OK);
-    }
-
+  @PostMapping("/changePassword")
+  public ResponseEntity<String> changePassword(@RequestBody PasswordResetDto passwordResetDto) {
+    passwordResetService.changePassword(passwordResetDto);
+    return new ResponseEntity<>("Password was successfully restored", OK);
+  }
 }

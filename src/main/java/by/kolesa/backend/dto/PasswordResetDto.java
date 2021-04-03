@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PasswordResetDto {
 
-    // TODO validation
-    private String newPassword;
-
-    private String token;
-
+  // TODO validation
+  private String newPassword;
+  private String token;
 }

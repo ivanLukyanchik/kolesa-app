@@ -14,10 +14,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChapterController {
 
-    private final ChapterService chapterService;
+  private final ChapterService chapterService;
 
-    @GetMapping
-    public List<Chapter> getAllChapters() {
-        return chapterService.getAllChapters();
-    }
+  @GetMapping
+  public List<Chapter> getAllChapters() {
+    return chapterService.getAllChapters();
+  }
 }

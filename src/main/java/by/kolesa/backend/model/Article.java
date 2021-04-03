@@ -21,14 +21,13 @@ import javax.persistence.Table;
 @Table(name = "ARTICLES")
 public class Article {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private String text;
+  private String text;
 
-    @ApiModelProperty(value = "Can be null")
-    @Column(name = "LINK_TO_IMG")
-    private String linkToImage;
-
+  @ApiModelProperty(value = "Can be null")
+  @Column(name = "LINK_TO_IMG")
+  private String linkToImage;
 }

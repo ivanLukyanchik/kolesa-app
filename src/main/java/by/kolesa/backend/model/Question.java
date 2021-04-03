@@ -25,23 +25,21 @@ import java.util.List;
 @Table(name = "QUESTIONS")
 public class Question {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
-    private String text;
+  private String text;
 
-    @Column(name = "LINK_TO_IMG")
-    private String linkToImage;
-    
-    @Column(name = "TOPIC_ID")
-    private Long topicId;
+  @Column(name = "LINK_TO_IMG")
+  private String linkToImage;
 
-    @OneToOne
-    private Paragraph paragraph;
+  @Column(name = "TOPIC_ID")
+  private Long topicId;
 
-    @OneToMany(cascade= CascadeType.ALL)
-    @JoinColumn(name="QUESTION_ID")
-    private List<Answer> answers;
+  @OneToOne private Paragraph paragraph;
 
+  @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn(name = "QUESTION_ID")
+  private List<Answer> answers;
 }

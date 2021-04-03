@@ -17,55 +17,53 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserAnswerService {
 
-    private final UserAnswerRepository userAnswerRepository;
+  private final UserAnswerRepository userAnswerRepository;
+  private final AnswerService answerService;
+  private final UserService userService;
 
-    private final AnswerService answerService;
+  @Value("${control.questions.number}")
+  private String CONTROL_QUESTIONS_NUMBER;
 
-    private final UserService userService;
+  public List<UserAnswer> getIncorrectUserAnswersForPersonalizedControl() {
+    Long userId = userService.getUserIdOfLoggedIn();
+    return userAnswerRepository.findByAnswerIsCorrectAndUserIdAndForControl(
+        false, userId, Integer.parseInt(CONTROL_QUESTIONS_NUMBER));
+  }
 
-    @Value("${control.questions.number}")
-    private String CONTROL_QUESTIONS_NUMBER;
+  public long countCorrectUserAnswers(Long userId) {
+    return userAnswerRepository.countByAnswerIsCorrectAndUserId(true, userId);
+  }
 
-    public List<UserAnswer> getIncorrectUserAnswersForPersonalizedControl() {
-        Long userId = userService.getUserIdOfLoggedIn();
-        return userAnswerRepository.findByAnswerIsCorrectAndUserIdAndForControl(false, userId, Integer.parseInt(CONTROL_QUESTIONS_NUMBER));
-    }
-
-    public long countCorrectUserAnswers(Long userId) {
-        return userAnswerRepository.countByAnswerIsCorrectAndUserId(true, userId);
-    }
-
-    @Transactional
-    public List<UserAnswer> getUserAnswersFromDto(ControlAnswersDto controlAnswersDto) {
-        UserAnswer userAnswer;
-        List<UserAnswer> answers = new ArrayList<>();
-        for (UserAnswerDto userAnswerDto : controlAnswersDto.getUserAnswers()) {
-            userAnswer = new UserAnswer();
-            Long userId = userService.getUserIdOfLoggedIn();
-            userAnswer.setUserId(userId);
-            userAnswer.setQuestionId(userAnswerDto.getQuestionId());
-            if (userAnswerDto.getAnswerId() != null) {
-                Answer answer = answerService.getAnswerById(userAnswerDto.getAnswerId());
-                userAnswer.setAnswer(answer);
-                if (answer.isCorrect()) {
-                    List<UserAnswer> incorrectUserAnswersForThisQuestion =
-                            userAnswerRepository.findByQuestionIdAndUserIdAndAnswerIsCorrectAndForControl(userAnswerDto.getQuestionId(),
-                                    userId, false, true);
-                    for (UserAnswer incorrectUserAnswer : incorrectUserAnswersForThisQuestion) {
-                        incorrectUserAnswer.setForControl(false);
-                        userAnswerRepository.save(incorrectUserAnswer);
-                    }
-                }
-            } else {
-                userAnswer.setAnswer(null);
-            }
-            answers.add(userAnswer);
+  @Transactional
+  public List<UserAnswer> getUserAnswersFromDto(ControlAnswersDto controlAnswersDto) {
+    UserAnswer userAnswer;
+    List<UserAnswer> answers = new ArrayList<>();
+    for (UserAnswerDto userAnswerDto : controlAnswersDto.getUserAnswers()) {
+      userAnswer = new UserAnswer();
+      Long userId = userService.getUserIdOfLoggedIn();
+      userAnswer.setUserId(userId);
+      userAnswer.setQuestionId(userAnswerDto.getQuestionId());
+      if (userAnswerDto.getAnswerId() != null) {
+        Answer answer = answerService.getAnswerById(userAnswerDto.getAnswerId());
+        userAnswer.setAnswer(answer);
+        if (answer.isCorrect()) {
+          List<UserAnswer> incorrectUserAnswersForThisQuestion =
+              userAnswerRepository.findByQuestionIdAndUserIdAndAnswerIsCorrectAndForControl(
+                  userAnswerDto.getQuestionId(), userId, false, true);
+          for (UserAnswer incorrectUserAnswer : incorrectUserAnswersForThisQuestion) {
+            incorrectUserAnswer.setForControl(false);
+            userAnswerRepository.save(incorrectUserAnswer);
+          }
         }
-        return answers;
+      } else {
+        userAnswer.setAnswer(null);
+      }
+      answers.add(userAnswer);
     }
+    return answers;
+  }
 
-    public long countAllUserAnswers(Long userId) {
-        return userAnswerRepository.countByUserIdAndAnswerNotNull(userId);
-    }
-
+  public long countAllUserAnswers(Long userId) {
+    return userAnswerRepository.countByUserIdAndAnswerNotNull(userId);
+  }
 }

@@ -9,14 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PaymentDto {
 
-    private int amount;
-
-    private String currency;
-
-    private String description;
-
-    private String stripeEmail;
-
-    private String stripeToken;
-
+  private int amount;
+  private String currency;
+  private String description;
+  private String stripeEmail;
+  private String stripeToken;
 }

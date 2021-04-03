@@ -16,16 +16,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TopicController {
 
-    private final TopicService topicService;
+  private final TopicService topicService;
 
-    @GetMapping()
-    public List<Topic> getAllTopics() {
-        return topicService.getAllTopics();
-    }
+  @GetMapping()
+  public List<Topic> getAllTopics() {
+    return topicService.getAllTopics();
+  }
 
-    @ApiOperation(value = "This is only for developing purpose", hidden = true)
-    @GetMapping("/{id}")
-    public Topic getTopicById(@PathVariable Long id) {
-        return topicService.getTopic(id);
-    }
+  @ApiOperation(value = "This is only for developing purpose", hidden = true)
+  @GetMapping("/{id}")
+  public Topic getTopicById(@PathVariable Long id) {
+    return topicService.getTopic(id);
+  }
 }

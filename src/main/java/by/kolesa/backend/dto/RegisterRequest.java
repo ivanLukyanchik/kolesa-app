@@ -12,14 +12,14 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor
 public class RegisterRequest {
 
-    @ApiModelProperty(value = "Either email or phone must be specified")
-    private String email;
+  @ApiModelProperty(value = "Either email or phone must be specified")
+  private String email;
 
-    private String phone;
+  private String phone;
+  private String username;
 
-    private String username;
-
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", message = "Minimum eight characters, at least one letter and one number for password")
-    private String password;
-
+  @Pattern(
+      regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$",
+      message = "Minimum eight characters, at least one letter and one number for password")
+  private String password;
 }

@@ -11,10 +11,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class SmsRequest {
 
-    @NotBlank
-    private String phoneNumber;
+  @NotBlank private String phoneNumber;
 
-    @NotBlank
-    private String message;
-
+  @NotBlank private String message;
 }

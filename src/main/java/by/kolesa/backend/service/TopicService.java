@@ -14,17 +14,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TopicService {
 
-    private final TopicRepository topicRepository;
+  private final TopicRepository topicRepository;
 
-    public List<Topic> getAllTopics() {
-        List<Topic> topics = new ArrayList<>();
-        topicRepository.findAll().forEach(topics::add);
-        return topics;
-    }
+  public List<Topic> getAllTopics() {
+    List<Topic> topics = new ArrayList<>();
+    topicRepository.findAll().forEach(topics::add);
+    return topics;
+  }
 
-    @SneakyThrows
-    public Topic getTopic(Long id) {
-        return topicRepository.findById(id).orElseThrow(TopicNotFoundException::new);
-    }
-
+  @SneakyThrows
+  public Topic getTopic(Long id) {
+    return topicRepository.findById(id).orElseThrow(TopicNotFoundException::new);
+  }
 }

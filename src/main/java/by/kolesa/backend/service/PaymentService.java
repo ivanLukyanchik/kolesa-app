@@ -28,73 +28,72 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PaymentService {
 
-    private final APIContext apiContext;
+  private final APIContext apiContext;
 
-    @Value("${stripe.secret.key}")
-    private String secretKey;
+  @Value("${stripe.secret.key}")
+  private String secretKey;
 
-    @PostConstruct
-    public void init() {
-        Stripe.apiKey = secretKey;
+  @PostConstruct
+  public void init() {
+    Stripe.apiKey = secretKey;
+  }
+
+  @SneakyThrows
+  public Charge charge(PaymentDto paymentDto) {
+    paymentDto.setDescription("Yet another description");
+    paymentDto.setCurrency("USD");
+    Map<String, Object> chargeParams = new HashMap<>();
+    chargeParams.put("amount", paymentDto.getAmount());
+    chargeParams.put("currency", paymentDto.getCurrency());
+    chargeParams.put("description", paymentDto.getDescription());
+    chargeParams.put("source", paymentDto.getStripeToken());
+    return Charge.create(chargeParams);
+  }
+
+  @SneakyThrows
+  public Payment createPaypalPayment(int total, String failureUrl, String successUrl) {
+    Amount amount = new Amount();
+    amount.setCurrency("USD");
+    double finalTotal = new BigDecimal(total).setScale(2, RoundingMode.HALF_UP).doubleValue();
+    amount.setTotal(String.format("%.2f", finalTotal));
+
+    Transaction transaction = new Transaction();
+    transaction.setDescription("Yet another description");
+    transaction.setAmount(amount);
+
+    List<Transaction> transactions = new ArrayList<>();
+    transactions.add(transaction);
+
+    Payer payer = new Payer();
+    payer.setPaymentMethod("paypal");
+
+    Payment payment = new Payment();
+    payment.setIntent("sale");
+    payment.setPayer(payer);
+    payment.setTransactions(transactions);
+    RedirectUrls redirectUrls = new RedirectUrls();
+    redirectUrls.setCancelUrl(failureUrl);
+    redirectUrls.setReturnUrl(successUrl);
+    payment.setRedirectUrls(redirectUrls);
+
+    return payment.create(apiContext);
+  }
+
+  @SneakyThrows
+  public Payment executePaypalPayment(String paymentId, String payerId) {
+    Payment payment = new Payment();
+    payment.setId(paymentId);
+    PaymentExecution paymentExecute = new PaymentExecution();
+    paymentExecute.setPayerId(payerId);
+    return payment.execute(apiContext, paymentExecute);
+  }
+
+  public String getApprovalLink(Payment payment) {
+    for (Links link : payment.getLinks()) {
+      if (link.getRel().equals("approval_url")) {
+        return link.getHref();
+      }
     }
-
-    @SneakyThrows
-    public Charge charge(PaymentDto paymentDto) {
-        paymentDto.setDescription("Yet another description");
-        paymentDto.setCurrency("USD");
-        Map<String, Object> chargeParams = new HashMap<>();
-        chargeParams.put("amount", paymentDto.getAmount());
-        chargeParams.put("currency", paymentDto.getCurrency());
-        chargeParams.put("description", paymentDto.getDescription());
-        chargeParams.put("source", paymentDto.getStripeToken());
-        return Charge.create(chargeParams);
-    }
-
-    @SneakyThrows
-    public Payment createPaypalPayment(int total, String failureUrl, String successUrl) {
-        Amount amount = new Amount();
-        amount.setCurrency("USD");
-        double finalTotal = new BigDecimal(total).setScale(2, RoundingMode.HALF_UP).doubleValue();
-        amount.setTotal(String.format("%.2f", finalTotal));
-
-        Transaction transaction = new Transaction();
-        transaction.setDescription("Yet another description");
-        transaction.setAmount(amount);
-
-        List<Transaction> transactions = new ArrayList<>();
-        transactions.add(transaction);
-
-        Payer payer = new Payer();
-        payer.setPaymentMethod("paypal");
-
-        Payment payment = new Payment();
-        payment.setIntent("sale");
-        payment.setPayer(payer);
-        payment.setTransactions(transactions);
-        RedirectUrls redirectUrls = new RedirectUrls();
-        redirectUrls.setCancelUrl(failureUrl);
-        redirectUrls.setReturnUrl(successUrl);
-        payment.setRedirectUrls(redirectUrls);
-
-        return payment.create(apiContext);
-    }
-
-    @SneakyThrows
-    public Payment executePaypalPayment(String paymentId, String payerId) {
-        Payment payment = new Payment();
-        payment.setId(paymentId);
-        PaymentExecution paymentExecute = new PaymentExecution();
-        paymentExecute.setPayerId(payerId);
-        return payment.execute(apiContext, paymentExecute);
-    }
-
-    public String getApprovalLink(Payment payment) {
-        for (Links link : payment.getLinks()) {
-            if (link.getRel().equals("approval_url")) {
-                return  link.getHref();
-            }
-        }
-        return null;
-    }
-
+    return null;
+  }
 }

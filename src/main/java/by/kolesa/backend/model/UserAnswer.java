@@ -27,25 +27,23 @@ import javax.persistence.Table;
 @Table(name = "USER_ANSWERS")
 public class UserAnswer {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @OneToOne
-    private Answer answer;
+  @OneToOne private Answer answer;
 
-    @Column(name = "QUESTION_ID")
-    private Long questionId;
+  @Column(name = "QUESTION_ID")
+  private Long questionId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CONTROL_ID")
-    @JsonIgnore
-    private Control control;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "CONTROL_ID")
+  @JsonIgnore
+  private Control control;
 
-    @Column(name = "USER_ID")
-    private Long userId;
+  @Column(name = "USER_ID")
+  private Long userId;
 
-    @Column(name = "FOR_CONTROL")
-    private boolean forControl;
-
+  @Column(name = "FOR_CONTROL")
+  private boolean forControl;
 }

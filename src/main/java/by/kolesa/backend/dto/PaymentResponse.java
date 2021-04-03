@@ -11,10 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PaymentResponse {
 
-    private String status;
-
-    private String chargeId;
-
-    private String balanceTransaction;
-
+  private String status;
+  private String chargeId;
+  private String balanceTransaction;
 }
