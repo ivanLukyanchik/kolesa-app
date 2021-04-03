@@ -1,7 +1,9 @@
 package by.kolesa.backend.service;
 
+import by.kolesa.backend.dto.QuestionDto;
+import by.kolesa.backend.entity.Question;
 import by.kolesa.backend.exception.QuestionNotFoundException;
-import by.kolesa.backend.model.Question;
+import by.kolesa.backend.mapper.QuestionMapper;
 import by.kolesa.backend.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -17,40 +19,45 @@ import java.util.List;
 public class QuestionService {
 
   private final QuestionRepository questionRepository;
+  private final QuestionMapper questionMapper;
 
   @Value("${control.questions.number}")
   private int controlQuestionsNumber;
 
   @Transactional(readOnly = true)
-  public List<Question> getAllQuestions() {
+  public List<QuestionDto> getAllQuestions() {
     List<Question> questions = new ArrayList<>();
     questionRepository.findAll().forEach(questions::add);
-    return questions;
+    return questionMapper.toQuestionDtos(questions);
   }
 
   @Transactional(readOnly = true)
-  public List<Question> getQuestionsByTopic(Long topicId) {
-    return questionRepository.findAllByTopicId(topicId);
+  public List<QuestionDto> getQuestionsByTopic(Long topicId) {
+    return questionMapper.toQuestionDtos(questionRepository.findAllByTopicId(topicId));
   }
 
   @SneakyThrows
   @Transactional(readOnly = true)
-  public Question getQuestion(Long id) {
-    return questionRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
+  public QuestionDto getQuestion(Long id) {
+    Question question = questionRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
+    return questionMapper.toQuestionDto(question);
   }
 
   @Transactional(readOnly = true)
-  public List<Question> get10RandomQuestions() {
-    return questionRepository.findTopN(controlQuestionsNumber);
+  public List<QuestionDto> get10RandomQuestions() {
+    return questionMapper.toQuestionDtos(questionRepository.findTopN(controlQuestionsNumber));
   }
 
   @Transactional(readOnly = true)
-  public List<Question> get10RandomQuestionsByTopicId(Long topicId) {
-    return questionRepository.findTopNByTopicId(topicId, controlQuestionsNumber);
+  public List<QuestionDto> get10RandomQuestionsByTopicId(Long topicId) {
+    List<Question> randomQuestionsByTopic =
+        questionRepository.findTopNByTopicId(topicId, controlQuestionsNumber);
+    return questionMapper.toQuestionDtos(randomQuestionsByTopic);
   }
 
   @Transactional(readOnly = true)
-  public List<Question> getQuestionsByChapterId(Long chapterId) {
-    return questionRepository.findByParagraphChapterId(chapterId);
+  public List<QuestionDto> getQuestionsByChapterId(Long chapterId) {
+    List<Question> questionsByChapterId = questionRepository.findByParagraphChapterId(chapterId);
+    return questionMapper.toQuestionDtos(questionsByChapterId);
   }
 }

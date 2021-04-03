@@ -1,12 +1,10 @@
-package by.kolesa.backend.model;
+package by.kolesa.backend.entity;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,16 +16,12 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "ARTICLES")
-public class Article {
+@Table(name = "CHAPTERS")
+public class Chapter {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private String text;
-
-  @ApiModelProperty(value = "Can be null")
-  @Column(name = "LINK_TO_IMG")
-  private String linkToImage;
+  private String name;
 }

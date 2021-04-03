@@ -1,6 +1,6 @@
 package by.kolesa.backend.repository;
 
-import by.kolesa.backend.model.VerificationToken;
+import by.kolesa.backend.entity.VerificationToken;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;

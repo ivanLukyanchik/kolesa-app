@@ -1,6 +1,7 @@
-package by.kolesa.backend.model;
+package by.kolesa.backend.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,11 +17,12 @@ import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "VERIFICATION_TOKENS")
-public class VerificationToken {
+@Table(name = "PASSWORD_RESET_TOKENS")
+public class PasswordResetToken {
 
   @Id
   @GeneratedValue(strategy = IDENTITY)

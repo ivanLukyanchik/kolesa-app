@@ -1,6 +1,6 @@
 package by.kolesa.backend.repository;
 
-import by.kolesa.backend.model.UserAnswer;
+import by.kolesa.backend.entity.UserAnswer;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;

@@ -1,6 +1,6 @@
 package by.kolesa.backend.controller;
 
-import by.kolesa.backend.model.Chapter;
+import by.kolesa.backend.dto.ChapterDto;
 import by.kolesa.backend.service.ChapterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +17,7 @@ public class ChapterController {
   private final ChapterService chapterService;
 
   @GetMapping
-  public List<Chapter> getAllChapters() {
+  public List<ChapterDto> getAllChapters() {
     return chapterService.getAllChapters();
   }
 }

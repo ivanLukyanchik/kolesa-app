@@ -1,7 +1,9 @@
 package by.kolesa.backend.service;
 
+import by.kolesa.backend.dto.AnswerDto;
+import by.kolesa.backend.entity.Answer;
 import by.kolesa.backend.exception.AnswerNotFoundException;
-import by.kolesa.backend.model.Answer;
+import by.kolesa.backend.mapper.AnswerMapper;
 import by.kolesa.backend.repository.AnswerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -16,18 +18,20 @@ import java.util.List;
 public class AnswerService {
 
   private final AnswerRepository answerRepository;
+  private final AnswerMapper answerMapper;
 
   @Transactional(readOnly = true)
-  public List<Answer> getAllAnswers() {
+  public List<AnswerDto> getAllAnswers() {
     List<Answer> answers = new ArrayList<>();
     answerRepository.findAll().forEach(answers::add);
-    return answers;
+    return answerMapper.toAnswerDtos(answers);
   }
 
   @SneakyThrows
   @Transactional(readOnly = true)
-  public Answer getAnswer(Long id) {
-    return answerRepository.findById(id).orElseThrow(AnswerNotFoundException::new);
+  public AnswerDto getAnswer(Long id) {
+    Answer answer = answerRepository.findById(id).orElseThrow(AnswerNotFoundException::new);
+    return answerMapper.toAnswerDto(answer);
   }
 
   @SneakyThrows

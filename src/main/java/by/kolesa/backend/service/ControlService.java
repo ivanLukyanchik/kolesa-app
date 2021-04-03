@@ -4,11 +4,13 @@ import by.kolesa.backend.dto.AnswerResultDto;
 import by.kolesa.backend.dto.ControlAnswersDto;
 import by.kolesa.backend.dto.ControlQuestionsDto;
 import by.kolesa.backend.dto.ControlResultDto;
+import by.kolesa.backend.entity.Control;
+import by.kolesa.backend.entity.Question;
+import by.kolesa.backend.entity.UserAnswer;
 import by.kolesa.backend.exception.IncorrectUserAnswersNotFoundException;
 import by.kolesa.backend.exception.QuestionNotFoundException;
-import by.kolesa.backend.model.Control;
-import by.kolesa.backend.model.Question;
-import by.kolesa.backend.model.UserAnswer;
+import by.kolesa.backend.mapper.AnswerMapper;
+import by.kolesa.backend.mapper.QuestionMapper;
 import by.kolesa.backend.repository.ControlRepository;
 import by.kolesa.backend.repository.QuestionRepository;
 import by.kolesa.backend.util.DateUtil;
@@ -26,6 +28,8 @@ import java.util.List;
 public class ControlService {
 
   private final QuestionRepository questionRepository;
+  private final QuestionMapper questionMapper;
+  private final AnswerMapper answerMapper;
   private final ControlRepository controlRepository;
   private final UserAnswerService userAnswerService;
   private final UserService userService;
@@ -40,14 +44,14 @@ public class ControlService {
   public ControlQuestionsDto getControlQuestionsByTopic(Long id) {
     List<Question> questions = questionRepository.findTopNByTopicId(id, controlQuestionsNumber);
     String endTime = DateUtil.getCurrentDatePlusMinutes(controlDurationInMinutes);
-    return new ControlQuestionsDto(questions, endTime);
+    return new ControlQuestionsDto(questionMapper.toQuestionDtos(questions), endTime);
   }
 
   @Transactional(readOnly = true)
   public ControlQuestionsDto getRandomControlQuestions() {
     List<Question> questions = questionRepository.findTopN(controlQuestionsNumber);
     String endTime = DateUtil.getCurrentDatePlusMinutes(controlDurationInMinutes);
-    return new ControlQuestionsDto(questions, endTime);
+    return new ControlQuestionsDto(questionMapper.toQuestionDtos(questions), endTime);
   }
 
   @SneakyThrows
@@ -72,7 +76,7 @@ public class ControlService {
       questions.add(question);
     }
     String endTime = DateUtil.getCurrentDatePlusMinutes(controlDurationInMinutes);
-    return new ControlQuestionsDto(questions, endTime);
+    return new ControlQuestionsDto(questionMapper.toQuestionDtos(questions), endTime);
   }
 
   @Transactional
@@ -99,11 +103,12 @@ public class ControlService {
       List<AnswerResultDto> answerResults = new ArrayList<>();
       for (UserAnswer userAnswer : userAnswers) {
         AnswerResultDto answerResultDto = new AnswerResultDto();
-        answerResultDto.setQuestion(
+        Question question =
             questionRepository
                 .findById(userAnswer.getQuestionId())
-                .orElseThrow(QuestionNotFoundException::new));
-        answerResultDto.setAnswer(userAnswer.getAnswer());
+                .orElseThrow(QuestionNotFoundException::new);
+        answerResultDto.setQuestion(questionMapper.toQuestionDto(question));
+        answerResultDto.setAnswer(answerMapper.toAnswerDto(userAnswer.getAnswer()));
         answerResults.add(answerResultDto);
       }
       controlResultDto.setAnswers(answerResults);

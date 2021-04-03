@@ -1,7 +1,7 @@
 package by.kolesa.backend.service;
 
 import by.kolesa.backend.exception.InvalidTokenException;
-import by.kolesa.backend.model.RefreshToken;
+import by.kolesa.backend.entity.RefreshToken;
 import by.kolesa.backend.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;

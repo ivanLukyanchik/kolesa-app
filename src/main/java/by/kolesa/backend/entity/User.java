@@ -1,4 +1,4 @@
-package by.kolesa.backend.model;
+package by.kolesa.backend.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

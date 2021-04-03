@@ -1,6 +1,6 @@
 package by.kolesa.backend.controller;
 
-import by.kolesa.backend.model.Topic;
+import by.kolesa.backend.dto.TopicDto;
 import by.kolesa.backend.service.TopicService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -18,14 +18,14 @@ public class TopicController {
 
   private final TopicService topicService;
 
-  @GetMapping()
-  public List<Topic> getAllTopics() {
+  @GetMapping
+  public List<TopicDto> getAllTopics() {
     return topicService.getAllTopics();
   }
 
   @ApiOperation(value = "This is only for developing purpose", hidden = true)
   @GetMapping("/{id}")
-  public Topic getTopicById(@PathVariable Long id) {
+  public TopicDto getTopicById(@PathVariable Long id) {
     return topicService.getTopic(id);
   }
 }

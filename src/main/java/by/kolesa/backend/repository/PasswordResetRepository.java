@@ -1,6 +1,6 @@
 package by.kolesa.backend.repository;
 
-import by.kolesa.backend.model.PasswordResetToken;
+import by.kolesa.backend.entity.PasswordResetToken;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

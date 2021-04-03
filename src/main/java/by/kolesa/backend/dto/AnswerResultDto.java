@@ -1,7 +1,5 @@
 package by.kolesa.backend.dto;
 
-import by.kolesa.backend.model.Answer;
-import by.kolesa.backend.model.Question;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AnswerResultDto {
 
-  private Question question;
-  private Answer answer;
+  private QuestionDto question;
+  private AnswerDto answer;
 }

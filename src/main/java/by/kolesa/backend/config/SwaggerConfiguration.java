@@ -27,13 +27,15 @@ public class SwaggerConfiguration {
   private ApiInfo createApiInfo() {
     return new ApiInfo(
         "Kolesa API",
-        "API for best quiz application for passing tests according to the rules of the road",
+        "API for quiz application for passing tests according to the rules of the road",
         "1.0",
         "Free to use",
         new Contact(
-            "Vanya Luk", "https://www.linkedin.com/in/ivan-lukyanchik/", "vanek17121999@gmail.com"),
+            "Ivan Lukyanchik",
+            "https://www.linkedin.com/in/ivan-lukyanchik/",
+            "vanek17121999@gmail.com"),
         "API License",
-        "VanyaLuk",
+        "Ivan Lukyanchik",
         Collections.emptyList());
   }
 }

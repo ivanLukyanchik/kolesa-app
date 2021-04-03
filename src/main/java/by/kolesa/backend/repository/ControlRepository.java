@@ -1,6 +1,6 @@
 package by.kolesa.backend.repository;
 
-import by.kolesa.backend.model.Control;
+import by.kolesa.backend.entity.Control;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

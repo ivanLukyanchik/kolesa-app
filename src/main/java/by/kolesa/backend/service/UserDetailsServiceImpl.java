@@ -1,6 +1,6 @@
 package by.kolesa.backend.service;
 
-import by.kolesa.backend.model.User;
+import by.kolesa.backend.entity.User;
 import by.kolesa.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;

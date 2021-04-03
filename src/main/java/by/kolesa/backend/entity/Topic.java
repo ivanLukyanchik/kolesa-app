@@ -1,4 +1,4 @@
-package by.kolesa.backend.model;
+package by.kolesa.backend.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,11 +16,11 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "CHAPTERS")
-public class Chapter {
+@Table(name = "TOPICS")
+public class Topic {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
   private String name;

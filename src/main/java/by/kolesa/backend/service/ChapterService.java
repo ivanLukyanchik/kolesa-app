@@ -1,6 +1,8 @@
 package by.kolesa.backend.service;
 
-import by.kolesa.backend.model.Chapter;
+import by.kolesa.backend.dto.ChapterDto;
+import by.kolesa.backend.entity.Chapter;
+import by.kolesa.backend.mapper.ChapterMapper;
 import by.kolesa.backend.repository.ChapterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,11 +16,12 @@ import java.util.List;
 public class ChapterService {
 
   private final ChapterRepository chapterRepository;
+  private final ChapterMapper chapterMapper;
 
   @Transactional(readOnly = true)
-  public List<Chapter> getAllChapters() {
+  public List<ChapterDto> getAllChapters() {
     List<Chapter> chapters = new ArrayList<>();
     chapterRepository.findAll().forEach(chapters::add);
-    return chapters;
+    return chapterMapper.toChapterDtos(chapters);
   }
 }

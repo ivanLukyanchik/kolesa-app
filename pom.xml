@@ -12,7 +12,7 @@
     <artifactId>kolesa</artifactId>
     <version>1.0</version>
     <name>kolesa</name>
-    <description>Best quiz application for passing tests according to the rules of the road</description>
+    <description>Quiz application for passing tests according to the rules of the road</description>
 
     <properties>
         <java.version>11</java.version>
@@ -75,6 +75,20 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- mapstruct -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>1.4.2.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>1.4.2.Final</version>
+        </dependency>
+
+
 
         <!--        Swagger-->
         <dependency>

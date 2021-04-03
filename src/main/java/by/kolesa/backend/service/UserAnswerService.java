@@ -2,8 +2,8 @@ package by.kolesa.backend.service;
 
 import by.kolesa.backend.dto.ControlAnswersDto;
 import by.kolesa.backend.dto.UserAnswerDto;
-import by.kolesa.backend.model.Answer;
-import by.kolesa.backend.model.UserAnswer;
+import by.kolesa.backend.entity.Answer;
+import by.kolesa.backend.entity.UserAnswer;
 import by.kolesa.backend.repository.UserAnswerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

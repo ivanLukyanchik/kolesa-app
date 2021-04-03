@@ -1,6 +1,6 @@
 package by.kolesa.backend.controller;
 
-import by.kolesa.backend.model.Answer;
+import by.kolesa.backend.dto.AnswerDto;
 import by.kolesa.backend.service.AnswerService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -22,13 +22,13 @@ public class AnswerController {
 
   @ApiOperation(value = "This is only for developing purpose", hidden = true)
   @GetMapping
-  public List<Answer> getAllAnswers() {
+  public List<AnswerDto> getAllAnswers() {
     return answerService.getAllAnswers();
   }
 
   @ApiOperation(value = "This is only for developing purpose", hidden = true)
   @GetMapping("/{id}")
-  public Answer getAnswerById(@PathVariable Long id) {
+  public AnswerDto getAnswerById(@PathVariable Long id) {
     return answerService.getAnswer(id);
   }
 }
