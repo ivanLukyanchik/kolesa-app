@@ -17,7 +17,6 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,30 +31,20 @@ public class ControlService {
   private final UserService userService;
 
   @Value("${control.questions.number}")
-  private String CONTROL_QUESTIONS_NUMBER_STRING;
+  private int controlQuestionsNumber;
 
   @Value("${control.duration.minutes}")
-  private String CONTROL_DURATION_IN_MINUTES_STRING;
-
-  private int CONTROL_QUESTIONS_NUMBER;
-
-  private int CONTROL_DURATION_IN_MINUTES;
-
-  @PostConstruct
-  private void initIntConstantsFromProperties() {
-    CONTROL_QUESTIONS_NUMBER = Integer.parseInt(CONTROL_QUESTIONS_NUMBER_STRING);
-    CONTROL_DURATION_IN_MINUTES = Integer.parseInt(CONTROL_DURATION_IN_MINUTES_STRING);
-  }
+  private int controlDurationInMinutes;
 
   public ControlQuestionsDto getControlQuestionsByTopic(Long id) {
-    List<Question> questions = questionRepository.findTopNByTopicId(id, CONTROL_QUESTIONS_NUMBER);
-    String endTime = DateUtil.getCurrentDatePlusMinutes(CONTROL_DURATION_IN_MINUTES);
+    List<Question> questions = questionRepository.findTopNByTopicId(id, controlQuestionsNumber);
+    String endTime = DateUtil.getCurrentDatePlusMinutes(controlDurationInMinutes);
     return new ControlQuestionsDto(questions, endTime);
   }
 
   public ControlQuestionsDto getRandomControlQuestions() {
-    List<Question> questions = questionRepository.findTopN(CONTROL_QUESTIONS_NUMBER);
-    String endTime = DateUtil.getCurrentDatePlusMinutes(CONTROL_DURATION_IN_MINUTES);
+    List<Question> questions = questionRepository.findTopN(controlQuestionsNumber);
+    String endTime = DateUtil.getCurrentDatePlusMinutes(controlDurationInMinutes);
     return new ControlQuestionsDto(questions, endTime);
   }
 
@@ -65,9 +54,9 @@ public class ControlService {
     List<UserAnswer> incorrectUserAnswers =
         userAnswerService.getIncorrectUserAnswersForPersonalizedControl();
     int actualSize = incorrectUserAnswers.size();
-    if (actualSize < CONTROL_QUESTIONS_NUMBER) {
-      int remainingQuestionsCount = CONTROL_QUESTIONS_NUMBER - actualSize;
-      if (remainingQuestionsCount == CONTROL_QUESTIONS_NUMBER) {
+    if (actualSize < controlQuestionsNumber) {
+      int remainingQuestionsCount = controlQuestionsNumber - actualSize;
+      if (remainingQuestionsCount == controlQuestionsNumber) {
         throw new IncorrectUserAnswersNotFoundException();
       }
       questions.addAll(questionRepository.findTopN(remainingQuestionsCount));
@@ -79,7 +68,7 @@ public class ControlService {
               .orElseThrow(QuestionNotFoundException::new);
       questions.add(question);
     }
-    String endTime = DateUtil.getCurrentDatePlusMinutes(CONTROL_DURATION_IN_MINUTES);
+    String endTime = DateUtil.getCurrentDatePlusMinutes(controlDurationInMinutes);
     return new ControlQuestionsDto(questions, endTime);
   }
 

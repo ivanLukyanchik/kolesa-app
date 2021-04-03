@@ -22,12 +22,12 @@ public class UserAnswerService {
   private final UserService userService;
 
   @Value("${control.questions.number}")
-  private String CONTROL_QUESTIONS_NUMBER;
+  private String controlQuestionsNumber;
 
   public List<UserAnswer> getIncorrectUserAnswersForPersonalizedControl() {
     Long userId = userService.getUserIdOfLoggedIn();
     return userAnswerRepository.findByAnswerIsCorrectAndUserIdAndForControl(
-        false, userId, Integer.parseInt(CONTROL_QUESTIONS_NUMBER));
+        false, userId, Integer.parseInt(controlQuestionsNumber));
   }
 
   public long countCorrectUserAnswers(Long userId) {

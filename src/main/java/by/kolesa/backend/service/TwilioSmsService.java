@@ -15,12 +15,12 @@ import org.springframework.stereotype.Service;
 public class TwilioSmsService {
 
   @Value("${twilio.trial_number}")
-  private String TRIAL_NUMBER;
+  private String trialNumber;
 
   public void sendSms(SmsRequest smsRequest) {
     if (isPhoneNumberValid(smsRequest.getPhoneNumber())) {
       PhoneNumber to = new PhoneNumber(smsRequest.getPhoneNumber());
-      PhoneNumber from = new PhoneNumber(TRIAL_NUMBER);
+      PhoneNumber from = new PhoneNumber(trialNumber);
       String message = smsRequest.getMessage();
       MessageCreator creator = Message.creator(to, from, message);
       creator.create();

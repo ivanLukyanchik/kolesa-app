@@ -18,7 +18,7 @@ public class QuestionService {
   private final QuestionRepository questionRepository;
 
   @Value("${control.questions.number}")
-  private String CONTROL_QUESTIONS_NUMBER;
+  private String controlQuestionsNumber;
 
   public List<Question> getAllQuestions() {
     List<Question> questions = new ArrayList<>();
@@ -36,12 +36,11 @@ public class QuestionService {
   }
 
   public List<Question> get10RandomQuestions() {
-    return questionRepository.findTopN(Integer.parseInt(CONTROL_QUESTIONS_NUMBER));
+    return questionRepository.findTopN(Integer.parseInt(controlQuestionsNumber));
   }
 
   public List<Question> get10RandomQuestionsByTopicId(Long topicId) {
-    return questionRepository.findTopNByTopicId(
-        topicId, Integer.parseInt(CONTROL_QUESTIONS_NUMBER));
+    return questionRepository.findTopNByTopicId(topicId, Integer.parseInt(controlQuestionsNumber));
   }
 
   public List<Question> getQuestionsByChapterId(Long chapterId) {

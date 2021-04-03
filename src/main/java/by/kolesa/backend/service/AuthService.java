@@ -47,7 +47,7 @@ public class AuthService {
   private final UserValidator userValidator;
 
   @Value("${mail.activation.url}")
-  private String ACTIVATION_URL;
+  private String activationUrl;
 
   @SneakyThrows
   public void signUp(RegisterRequest registerRequest) {
@@ -79,7 +79,7 @@ public class AuthService {
     String token;
     if (user.isRegisteredByEmail()) {
       token = generateMailVerificationToken(user);
-      String message = mailContentBuilder.buildForSignUp(ACTIVATION_URL + "/" + token);
+      String message = mailContentBuilder.buildForSignUp(activationUrl + "/" + token);
       mailService.sendMail(
           new NotificationEmail("Please Activate your account", user.getEmail(), message));
     } else {

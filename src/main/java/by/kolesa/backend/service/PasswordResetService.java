@@ -33,7 +33,7 @@ public class PasswordResetService {
   private final TwilioSmsService twilioSmsService;
 
   @Value("${mail.restore.url}")
-  private String RESTORE_URL;
+  private String restoreUrl;
 
   @SneakyThrows
   public String resetPassword(PasswordResetRequest passwordResetRequest) {
@@ -55,7 +55,7 @@ public class PasswordResetService {
     String token;
     if (user.isRegisteredByEmail()) {
       token = generateMailPasswordResetToken(user);
-      String message = mailContentBuilder.buildForPasswordReset(RESTORE_URL + "/" + token);
+      String message = mailContentBuilder.buildForPasswordReset(restoreUrl + "/" + token);
       mailService.sendMail(new NotificationEmail("Password reset", user.getEmail(), message));
     } else {
       token = generateMobilePasswordResetToken(user);
