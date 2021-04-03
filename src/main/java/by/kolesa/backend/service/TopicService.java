@@ -6,6 +6,7 @@ import by.kolesa.backend.repository.TopicRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ public class TopicService {
 
   private final TopicRepository topicRepository;
 
+  @Transactional(readOnly = true)
   public List<Topic> getAllTopics() {
     List<Topic> topics = new ArrayList<>();
     topicRepository.findAll().forEach(topics::add);
@@ -23,6 +25,7 @@ public class TopicService {
   }
 
   @SneakyThrows
+  @Transactional(readOnly = true)
   public Topic getTopic(Long id) {
     return topicRepository.findById(id).orElseThrow(TopicNotFoundException::new);
   }

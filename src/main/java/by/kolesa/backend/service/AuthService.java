@@ -24,8 +24,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.Random;
@@ -50,6 +50,7 @@ public class AuthService {
   private String activationUrl;
 
   @SneakyThrows
+  @Transactional
   public void signUp(RegisterRequest registerRequest) {
     User user = new User();
     user.setUsername(registerRequest.getUsername());
@@ -119,7 +120,7 @@ public class AuthService {
     verificationTokenRepository.delete(verificationToken);
   }
 
-  void fetchUserAndEnable(VerificationToken verificationToken) throws UserNotFoundException {
+  private void fetchUserAndEnable(VerificationToken verificationToken) throws UserNotFoundException {
     String username = verificationToken.getUser().getUsername();
     User user =
         userRepository

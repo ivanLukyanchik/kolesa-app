@@ -38,10 +38,8 @@ public class PasswordResetService {
   @SneakyThrows
   public String resetPassword(PasswordResetRequest passwordResetRequest) {
     Optional<User> userOptional = Optional.empty();
-    if (passwordResetRequest.getEmail() != null) {
-      if (!passwordResetRequest.getEmail().isBlank()) {
-        userOptional = userRepository.findByEmail(passwordResetRequest.getEmail());
-      }
+    if (passwordResetRequest.getEmail() != null && !passwordResetRequest.getEmail().isBlank()) {
+      userOptional = userRepository.findByEmail(passwordResetRequest.getEmail());
     }
     if (userOptional.isEmpty()) {
       userOptional = userRepository.findByPhoneNumber(passwordResetRequest.getPhoneNumber());

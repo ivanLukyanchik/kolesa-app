@@ -16,8 +16,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,12 +36,14 @@ public class ControlService {
   @Value("${control.duration.minutes}")
   private int controlDurationInMinutes;
 
+  @Transactional(readOnly = true)
   public ControlQuestionsDto getControlQuestionsByTopic(Long id) {
     List<Question> questions = questionRepository.findTopNByTopicId(id, controlQuestionsNumber);
     String endTime = DateUtil.getCurrentDatePlusMinutes(controlDurationInMinutes);
     return new ControlQuestionsDto(questions, endTime);
   }
 
+  @Transactional(readOnly = true)
   public ControlQuestionsDto getRandomControlQuestions() {
     List<Question> questions = questionRepository.findTopN(controlQuestionsNumber);
     String endTime = DateUtil.getCurrentDatePlusMinutes(controlDurationInMinutes);
@@ -49,6 +51,7 @@ public class ControlService {
   }
 
   @SneakyThrows
+  @Transactional(readOnly = true)
   public ControlQuestionsDto getControlQuestionsBasedOnIncorrectAnswers() {
     List<Question> questions = new ArrayList<>();
     List<UserAnswer> incorrectUserAnswers =
@@ -83,6 +86,7 @@ public class ControlService {
   }
 
   @SneakyThrows
+  @Transactional(readOnly = true)
   public List<ControlResultDto> getPassedControlsForLoggedInUser() {
     List<ControlResultDto> controlResults = new ArrayList<>();
     ControlResultDto controlResultDto;
@@ -108,6 +112,7 @@ public class ControlService {
     return controlResults;
   }
 
+  @Transactional(readOnly = true)
   public String calculatePercentageOfCorrectAnswers() {
     Long userId = userService.getUserIdOfLoggedIn();
     long allUserAnswersCount = userAnswerService.countAllUserAnswers(userId);
@@ -116,7 +121,7 @@ public class ControlService {
     return String.format("%.2f", percentage);
   }
 
-  public Control buildControl(ControlAnswersDto controlAnswersDto) {
+  private Control buildControl(ControlAnswersDto controlAnswersDto) {
     return Control.builder()
         .durationInSeconds(controlAnswersDto.getDurationInSeconds())
         .userAnswers(new ArrayList<>())

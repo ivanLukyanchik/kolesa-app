@@ -8,8 +8,8 @@ import by.kolesa.backend.repository.UserAnswerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,19 +22,21 @@ public class UserAnswerService {
   private final UserService userService;
 
   @Value("${control.questions.number}")
-  private String controlQuestionsNumber;
+  private int controlQuestionsNumber;
 
+  @Transactional(readOnly = true)
   public List<UserAnswer> getIncorrectUserAnswersForPersonalizedControl() {
     Long userId = userService.getUserIdOfLoggedIn();
     return userAnswerRepository.findByAnswerIsCorrectAndUserIdAndForControl(
-        false, userId, Integer.parseInt(controlQuestionsNumber));
+        false, userId, controlQuestionsNumber);
   }
 
+  @Transactional(readOnly = true)
   public long countCorrectUserAnswers(Long userId) {
     return userAnswerRepository.countByAnswerIsCorrectAndUserId(true, userId);
   }
 
-  @Transactional
+  @Transactional(readOnly = true)
   public List<UserAnswer> getUserAnswersFromDto(ControlAnswersDto controlAnswersDto) {
     UserAnswer userAnswer;
     List<UserAnswer> answers = new ArrayList<>();

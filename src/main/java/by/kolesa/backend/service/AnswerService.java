@@ -6,6 +6,7 @@ import by.kolesa.backend.repository.AnswerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ public class AnswerService {
 
   private final AnswerRepository answerRepository;
 
+  @Transactional(readOnly = true)
   public List<Answer> getAllAnswers() {
     List<Answer> answers = new ArrayList<>();
     answerRepository.findAll().forEach(answers::add);
@@ -23,11 +25,13 @@ public class AnswerService {
   }
 
   @SneakyThrows
+  @Transactional(readOnly = true)
   public Answer getAnswer(Long id) {
     return answerRepository.findById(id).orElseThrow(AnswerNotFoundException::new);
   }
 
   @SneakyThrows
+  @Transactional(readOnly = true)
   public Answer getAnswerById(Long id) {
     return answerRepository.findById(id).orElseThrow(AnswerNotFoundException::new);
   }
