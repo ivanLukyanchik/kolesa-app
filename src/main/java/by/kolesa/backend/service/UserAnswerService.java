@@ -5,6 +5,7 @@ import by.kolesa.backend.dto.UserAnswerDto;
 import by.kolesa.backend.entity.Answer;
 import by.kolesa.backend.entity.UserAnswer;
 import by.kolesa.backend.repository.UserAnswerRepository;
+import by.kolesa.backend.tools.logging.LogExecutionTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class UserAnswerService {
   private int controlQuestionsNumber;
 
   @Transactional(readOnly = true)
+  @LogExecutionTime
   public List<UserAnswer> getIncorrectUserAnswersForPersonalizedControl() {
     Long userId = userService.getUserIdOfLoggedIn();
     return userAnswerRepository.findByAnswerIsCorrectAndUserIdAndForControl(
@@ -32,6 +34,7 @@ public class UserAnswerService {
   }
 
   @Transactional(readOnly = true)
+  @LogExecutionTime
   public long countCorrectUserAnswers(Long userId) {
     return userAnswerRepository.countByAnswerIsCorrectAndUserId(true, userId);
   }
@@ -65,6 +68,7 @@ public class UserAnswerService {
     return answers;
   }
 
+  @LogExecutionTime
   public long countAllUserAnswers(Long userId) {
     return userAnswerRepository.countByUserIdAndAnswerNotNull(userId);
   }

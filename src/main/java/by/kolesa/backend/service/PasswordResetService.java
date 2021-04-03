@@ -10,6 +10,7 @@ import by.kolesa.backend.entity.PasswordResetToken;
 import by.kolesa.backend.entity.User;
 import by.kolesa.backend.repository.PasswordResetRepository;
 import by.kolesa.backend.repository.UserRepository;
+import by.kolesa.backend.tools.logging.LogExecutionTime;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,6 +37,7 @@ public class PasswordResetService {
   private String restoreUrl;
 
   @SneakyThrows
+  @LogExecutionTime
   public String resetPassword(PasswordResetRequest passwordResetRequest) {
     Optional<User> userOptional = Optional.empty();
     if (passwordResetRequest.getEmail() != null && !passwordResetRequest.getEmail().isBlank()) {
@@ -49,6 +51,7 @@ public class PasswordResetService {
   }
 
   @SneakyThrows
+  @LogExecutionTime
   private String sendPasswordResetCode(User user) {
     String token;
     if (user.isRegisteredByEmail()) {
@@ -85,6 +88,7 @@ public class PasswordResetService {
 
   @SneakyThrows
   @Transactional
+  @LogExecutionTime
   public void changePassword(PasswordResetDto passwordResetDto) {
     Optional<PasswordResetToken> passwordResetTokenOptional =
         passwordResetRepository.findByToken(passwordResetDto.getToken());

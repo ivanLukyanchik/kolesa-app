@@ -13,6 +13,7 @@ import by.kolesa.backend.mapper.AnswerMapper;
 import by.kolesa.backend.mapper.QuestionMapper;
 import by.kolesa.backend.repository.ControlRepository;
 import by.kolesa.backend.repository.QuestionRepository;
+import by.kolesa.backend.tools.logging.LogExecutionTime;
 import by.kolesa.backend.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -41,6 +42,7 @@ public class ControlService {
   private int controlDurationInMinutes;
 
   @Transactional(readOnly = true)
+  @LogExecutionTime
   public ControlQuestionsDto getControlQuestionsByTopic(Long id) {
     List<Question> questions = questionRepository.findTopNByTopicId(id, controlQuestionsNumber);
     String endTime = DateUtil.getCurrentDatePlusMinutes(controlDurationInMinutes);
@@ -48,6 +50,7 @@ public class ControlService {
   }
 
   @Transactional(readOnly = true)
+  @LogExecutionTime
   public ControlQuestionsDto getRandomControlQuestions() {
     List<Question> questions = questionRepository.findTopN(controlQuestionsNumber);
     String endTime = DateUtil.getCurrentDatePlusMinutes(controlDurationInMinutes);
@@ -56,6 +59,7 @@ public class ControlService {
 
   @SneakyThrows
   @Transactional(readOnly = true)
+  @LogExecutionTime
   public ControlQuestionsDto getControlQuestionsBasedOnIncorrectAnswers() {
     List<Question> questions = new ArrayList<>();
     List<UserAnswer> incorrectUserAnswers =
@@ -80,6 +84,7 @@ public class ControlService {
   }
 
   @Transactional
+  @LogExecutionTime
   public void saveControlUserAnswers(ControlAnswersDto controlAnswersDto) {
     Control control = buildControl(controlAnswersDto);
     List<UserAnswer> userAnswers = userAnswerService.getUserAnswersFromDto(controlAnswersDto);
@@ -91,6 +96,7 @@ public class ControlService {
 
   @SneakyThrows
   @Transactional(readOnly = true)
+  @LogExecutionTime
   public List<ControlResultDto> getPassedControlsForLoggedInUser() {
     List<ControlResultDto> controlResults = new ArrayList<>();
     ControlResultDto controlResultDto;
@@ -118,6 +124,7 @@ public class ControlService {
   }
 
   @Transactional(readOnly = true)
+  @LogExecutionTime
   public String calculatePercentageOfCorrectAnswers() {
     Long userId = userService.getUserIdOfLoggedIn();
     long allUserAnswersCount = userAnswerService.countAllUserAnswers(userId);

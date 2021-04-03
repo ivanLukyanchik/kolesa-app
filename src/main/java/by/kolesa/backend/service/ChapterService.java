@@ -4,6 +4,7 @@ import by.kolesa.backend.dto.ChapterDto;
 import by.kolesa.backend.entity.Chapter;
 import by.kolesa.backend.mapper.ChapterMapper;
 import by.kolesa.backend.repository.ChapterRepository;
+import by.kolesa.backend.tools.logging.LogExecutionTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ public class ChapterService {
   private final ChapterMapper chapterMapper;
 
   @Transactional(readOnly = true)
+  @LogExecutionTime
   public List<ChapterDto> getAllChapters() {
     List<Chapter> chapters = new ArrayList<>();
     chapterRepository.findAll().forEach(chapters::add);

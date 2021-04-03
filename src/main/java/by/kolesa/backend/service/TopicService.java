@@ -5,6 +5,7 @@ import by.kolesa.backend.exception.TopicNotFoundException;
 import by.kolesa.backend.entity.Topic;
 import by.kolesa.backend.mapper.TopicMapper;
 import by.kolesa.backend.repository.TopicRepository;
+import by.kolesa.backend.tools.logging.LogExecutionTime;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class TopicService {
   private final TopicMapper topicMapper;
 
   @Transactional(readOnly = true)
+  @LogExecutionTime
   public List<TopicDto> getAllTopics() {
     List<Topic> topics = new ArrayList<>();
     topicRepository.findAll().forEach(topics::add);
@@ -29,6 +31,7 @@ public class TopicService {
 
   @SneakyThrows
   @Transactional(readOnly = true)
+  @LogExecutionTime
   public TopicDto getTopic(Long id) {
     Topic topic = topicRepository.findById(id).orElseThrow(TopicNotFoundException::new);
     return topicMapper.toTopicDto(topic);

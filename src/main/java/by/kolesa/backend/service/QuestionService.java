@@ -5,6 +5,7 @@ import by.kolesa.backend.entity.Question;
 import by.kolesa.backend.exception.QuestionNotFoundException;
 import by.kolesa.backend.mapper.QuestionMapper;
 import by.kolesa.backend.repository.QuestionRepository;
+import by.kolesa.backend.tools.logging.LogExecutionTime;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +26,7 @@ public class QuestionService {
   private int controlQuestionsNumber;
 
   @Transactional(readOnly = true)
+  @LogExecutionTime
   public List<QuestionDto> getAllQuestions() {
     List<Question> questions = new ArrayList<>();
     questionRepository.findAll().forEach(questions::add);
@@ -32,23 +34,27 @@ public class QuestionService {
   }
 
   @Transactional(readOnly = true)
+  @LogExecutionTime
   public List<QuestionDto> getQuestionsByTopic(Long topicId) {
     return questionMapper.toQuestionDtos(questionRepository.findAllByTopicId(topicId));
   }
 
   @SneakyThrows
   @Transactional(readOnly = true)
+  @LogExecutionTime
   public QuestionDto getQuestion(Long id) {
     Question question = questionRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
     return questionMapper.toQuestionDto(question);
   }
 
   @Transactional(readOnly = true)
+  @LogExecutionTime
   public List<QuestionDto> get10RandomQuestions() {
     return questionMapper.toQuestionDtos(questionRepository.findTopN(controlQuestionsNumber));
   }
 
   @Transactional(readOnly = true)
+  @LogExecutionTime
   public List<QuestionDto> get10RandomQuestionsByTopicId(Long topicId) {
     List<Question> randomQuestionsByTopic =
         questionRepository.findTopNByTopicId(topicId, controlQuestionsNumber);
@@ -56,6 +62,7 @@ public class QuestionService {
   }
 
   @Transactional(readOnly = true)
+  @LogExecutionTime
   public List<QuestionDto> getQuestionsByChapterId(Long chapterId) {
     List<Question> questionsByChapterId = questionRepository.findByParagraphChapterId(chapterId);
     return questionMapper.toQuestionDtos(questionsByChapterId);
