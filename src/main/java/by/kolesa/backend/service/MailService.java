@@ -19,7 +19,7 @@ public class MailService {
   private final JavaMailSender mailSender;
   private final MailContentBuilder mailContentBuilder;
 
-  @Async
+  //  @Async fixme
   public void sendMail(NotificationEmail notificationEmail) throws SendMailException {
     MimeMessagePreparator messagePreparator =
         mimeMessage -> {
