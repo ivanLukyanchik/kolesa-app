@@ -6,11 +6,11 @@ import by.kolesa.backend.dto.NotificationEmail;
 import by.kolesa.backend.dto.RefreshTokenRequest;
 import by.kolesa.backend.dto.RegisterRequest;
 import by.kolesa.backend.dto.SmsRequest;
+import by.kolesa.backend.entity.User;
+import by.kolesa.backend.entity.VerificationToken;
 import by.kolesa.backend.exception.CustomBadRequest;
 import by.kolesa.backend.exception.InvalidTokenException;
 import by.kolesa.backend.exception.UserNotFoundException;
-import by.kolesa.backend.entity.User;
-import by.kolesa.backend.entity.VerificationToken;
 import by.kolesa.backend.repository.UserRepository;
 import by.kolesa.backend.repository.VerificationTokenRepository;
 import by.kolesa.backend.security.JwtProvider;
@@ -65,7 +65,7 @@ public class AuthService {
     }
     user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
     user.setCreatedDate(Instant.now());
-    user.setEnabled(true);
+    user.setEnabled(false);
 
     if (!userValidator.isValid(user)) {
       throw new CustomBadRequest(userValidator.parseErrorMessages());
@@ -120,7 +120,8 @@ public class AuthService {
     verificationTokenRepository.delete(verificationToken);
   }
 
-  private void fetchUserAndEnable(VerificationToken verificationToken) throws UserNotFoundException {
+  private void fetchUserAndEnable(VerificationToken verificationToken)
+      throws UserNotFoundException {
     String username = verificationToken.getUser().getUsername();
     User user =
         userRepository
