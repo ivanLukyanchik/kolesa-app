@@ -20,7 +20,7 @@ public class MailService {
   private final MailContentBuilder mailContentBuilder;
 
   @Async
-  void sendMail(NotificationEmail notificationEmail) throws SendMailException {
+  public void sendMail(NotificationEmail notificationEmail) throws SendMailException {
     MimeMessagePreparator messagePreparator =
         mimeMessage -> {
           MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
