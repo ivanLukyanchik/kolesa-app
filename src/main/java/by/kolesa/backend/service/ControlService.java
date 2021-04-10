@@ -128,6 +128,9 @@ public class ControlService {
   public String calculatePercentageOfCorrectAnswers() {
     Long userId = userService.getUserIdOfLoggedIn();
     long allUserAnswersCount = userAnswerService.countAllUserAnswers(userId);
+    if (allUserAnswersCount == 0) {
+      return String.format("%.2f", 0.0);
+    }
     long correctUserAnswersCount = userAnswerService.countCorrectUserAnswers(userId);
     double percentage = ((double) correctUserAnswersCount / allUserAnswersCount) * 100;
     return String.format("%.2f", percentage);

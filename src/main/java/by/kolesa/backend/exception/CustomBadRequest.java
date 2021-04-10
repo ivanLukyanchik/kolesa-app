@@ -1,6 +1,6 @@
 package by.kolesa.backend.exception;
 
-public class CustomBadRequest extends Exception {
+public class CustomBadRequest extends RuntimeException {
 
   public CustomBadRequest() {
     this("Either email or phone number must be specified");

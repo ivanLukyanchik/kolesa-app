@@ -34,9 +34,11 @@ public class GlobalControllerAdvice {
   @ExceptionHandler({
     UserNotFoundException.class,
     AnswerNotFoundException.class,
+    QuestionNotFoundException.class,
+    TopicNotFoundException.class,
     IncorrectUserAnswersNotFoundException.class
   })
-  public ResponseEntity<String> handleUserNotFoundException(Exception ex) {
+  public ResponseEntity<String> handleNotFoundException(Exception ex) {
     return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
   }
 
@@ -63,10 +65,5 @@ public class GlobalControllerAdvice {
   @ExceptionHandler(BadCredentialsException.class)
   public ResponseEntity<String> handleBadCredentialsException(Exception ex) {
     return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
-  }
-
-  @ExceptionHandler(Exception.class)
-  public ResponseEntity<String> handleAll(Exception ex) {
-    return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }

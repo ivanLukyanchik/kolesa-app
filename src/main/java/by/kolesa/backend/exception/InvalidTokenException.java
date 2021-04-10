@@ -1,6 +1,6 @@
 package by.kolesa.backend.exception;
 
-public class InvalidTokenException extends Exception {
+public class InvalidTokenException extends RuntimeException {
 
   public InvalidTokenException() {
     this("Token is invalid");

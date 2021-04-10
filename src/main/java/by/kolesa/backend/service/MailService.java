@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 public class MailService {
 
   private final JavaMailSender mailSender;
-  private final MailContentBuilder mailContentBuilder;
 
   @Async
   public void sendMail(NotificationEmail notificationEmail) throws SendMailException {
@@ -27,8 +26,7 @@ public class MailService {
           messageHelper.setFrom("kolesa.app@gmail.com");
           messageHelper.setTo(notificationEmail.getRecipient());
           messageHelper.setSubject(notificationEmail.getSubject());
-          messageHelper.setText(
-              mailContentBuilder.buildForSignUp(notificationEmail.getBody()), true);
+          messageHelper.setText(notificationEmail.getBody());
         };
     try {
       mailSender.send(messagePreparator);

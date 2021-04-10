@@ -80,7 +80,13 @@ public class AuthService {
     String token;
     if (user.isRegisteredByEmail()) {
       token = generateMailVerificationToken(user);
-      String message = mailContentBuilder.buildForSignUp(activationUrl + "/" + token);
+      String message =
+          "Thanks for signing up with Kolesa! You must follow this link to activate your account: \n"
+              + activationUrl
+              + "/"
+              + token
+              + "\nHave fun, and don't hesitate to contact us with your feedback."
+              + "\n The Kolesa Team https://kolesa-app.herokuapp.com/";
       mailService.sendMail(
           new NotificationEmail("Please Activate your account", user.getEmail(), message));
     } else {

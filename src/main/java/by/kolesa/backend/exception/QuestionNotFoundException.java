@@ -1,6 +1,6 @@
 package by.kolesa.backend.exception;
 
-public class QuestionNotFoundException extends Exception {
+public class QuestionNotFoundException extends RuntimeException {
 
   public QuestionNotFoundException() {
     this("Question not found");

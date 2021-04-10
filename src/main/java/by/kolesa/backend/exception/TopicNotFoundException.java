@@ -1,6 +1,6 @@
 package by.kolesa.backend.exception;
 
-public class TopicNotFoundException extends Exception {
+public class TopicNotFoundException extends RuntimeException {
 
   public TopicNotFoundException() {
     this("Topic not found");

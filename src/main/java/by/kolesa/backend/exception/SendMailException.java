@@ -1,6 +1,6 @@
 package by.kolesa.backend.exception;
 
-public class SendMailException extends Exception {
+public class SendMailException extends RuntimeException {
 
   public SendMailException() {
     this("Exception occurred while sending email");
