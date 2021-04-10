@@ -4,6 +4,7 @@ import by.kolesa.backend.dto.ControlAnswersDto;
 import by.kolesa.backend.dto.ControlQuestionsDto;
 import by.kolesa.backend.dto.ControlResultDto;
 import by.kolesa.backend.service.ControlService;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
+@Api(tags = "Control API")
 @RequestMapping("/controls")
 @RequiredArgsConstructor
 public class ControlController {

@@ -5,6 +5,7 @@ import by.kolesa.backend.dto.PaymentResponse;
 import by.kolesa.backend.service.PaymentService;
 import com.paypal.api.payments.Payment;
 import com.stripe.model.Charge;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
 
+@Api(tags = "Payment API")
 @Controller
 @RequiredArgsConstructor
 @Slf4j

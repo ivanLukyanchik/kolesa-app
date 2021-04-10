@@ -2,6 +2,7 @@ package by.kolesa.backend.controller;
 
 import by.kolesa.backend.dto.TopicDto;
 import by.kolesa.backend.service.TopicService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
+@Api(tags = "Topic API")
 @RequestMapping("/topics")
 @RequiredArgsConstructor
 public class TopicController {

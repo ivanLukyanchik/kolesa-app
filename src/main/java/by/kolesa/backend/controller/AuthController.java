@@ -10,6 +10,7 @@ import by.kolesa.backend.exception.UserNotFoundException;
 import by.kolesa.backend.service.AuthService;
 import by.kolesa.backend.service.RefreshTokenService;
 import by.kolesa.backend.validator.RegisterRequestValidator;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ import javax.validation.Valid;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
+@Api(tags = "Auth API")
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {

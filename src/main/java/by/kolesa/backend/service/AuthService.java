@@ -85,8 +85,7 @@ public class AuthService {
               + activationUrl
               + "/"
               + token
-              + "\nHave fun, and don't hesitate to contact us with your feedback."
-              + "\n The Kolesa Team https://kolesa-app.herokuapp.com/";
+              + "\nHave fun, and don't hesitate to contact us with your feedback.";
       mailService.sendMail(
           new NotificationEmail("Please Activate your account", user.getEmail(), message));
     } else {
