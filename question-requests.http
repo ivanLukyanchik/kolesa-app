@@ -1,0 +1,14 @@
+### Get question by id
+GET {{url}}/questions/5
+
+### Get questions by chapter
+GET {{url}}/questions/chapter/1
+
+### Get questions by topic
+GET {{url}}/questions/topic/1
+
+### Get 10 random questions by topic
+GET {{url}}/questions/topic/1/random
+
+### Get 10 random questions
+GET {{url}}/questions/random

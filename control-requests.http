@@ -1,0 +1,3 @@
+### Get percentage of correct user's answers
+GET {{url}}/controls/percentage
+Authorization: Bearer {{auth_token}}
