@@ -1,0 +1,18 @@
+### Login user
+POST {{url}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "defrgthyjukik",
+  "password": "lollol123"
+}
+
+### Sign Up user
+POST {{url}}/auth/signUp
+Content-Type: application/json
+
+{
+  "email": "vanek17121999@gmail.com",
+  "password": "lollol123",
+  "username": "cleverusername"
+}
