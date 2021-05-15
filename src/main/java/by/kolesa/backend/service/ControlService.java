@@ -104,6 +104,7 @@ public class ControlService {
     List<Control> controls = controlRepository.findByUserId(userId);
     for (Control control : controls) {
       controlResultDto = new ControlResultDto();
+      controlResultDto.setCreatedAt(control.getCreatedAt());
       controlResultDto.setDurationInSeconds(control.getDurationInSeconds());
       List<UserAnswer> userAnswers = control.getUserAnswers();
       List<AnswerResultDto> answerResults = new ArrayList<>();

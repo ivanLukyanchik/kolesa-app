@@ -1,3 +1,7 @@
 ### Get percentage of correct user's answers
 GET {{url}}/controls/percentage
 Authorization: Bearer {{auth_token}}
+
+### Get passed controls for logged in user
+GET {{url}}/controls
+Authorization: Bearer {{auth_token}}

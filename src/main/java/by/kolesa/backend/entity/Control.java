@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.time.Instant;
 import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
@@ -38,6 +39,9 @@ public class Control {
 
   @Column(name = "USER_ID")
   private Long userId;
+
+  @Column(name = "CREATED_AT")
+  private Instant createdAt;
 
   public void addUserAnswer(UserAnswer userAnswer) {
     this.userAnswers.add(userAnswer);

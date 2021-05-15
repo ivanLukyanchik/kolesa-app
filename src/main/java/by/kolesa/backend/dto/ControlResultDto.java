@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
 import java.util.List;
 
 @Data
@@ -13,4 +14,5 @@ public class ControlResultDto {
 
   private List<AnswerResultDto> answers;
   private int durationInSeconds;
+  private Instant createdAt;
 }
