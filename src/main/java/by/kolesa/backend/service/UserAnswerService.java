@@ -48,6 +48,7 @@ public class UserAnswerService {
       Long userId = userService.getUserIdOfLoggedIn();
       userAnswer.setUserId(userId);
       userAnswer.setQuestionId(userAnswerDto.getQuestionId());
+      userAnswer.setForControl(true);
       if (userAnswerDto.getAnswerId() != null) {
         Answer answer = answerService.getAnswerById(userAnswerDto.getAnswerId());
         userAnswer.setAnswer(answer);

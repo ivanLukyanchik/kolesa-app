@@ -26,7 +26,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   private final UserDetailsService userDetailsService;
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
-  //    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
   @Override
   protected void configure(HttpSecurity httpSecurity) throws Exception {
@@ -38,13 +37,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         .authorizeRequests()
         .antMatchers("/secured/**")
         .authenticated()
-        //                .antMatchers("/auth/**")
         .antMatchers("/**")
         .permitAll();
-    //                .and()
-    //                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
-    //                .and()
-    //                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);;
     httpSecurity.addFilterBefore(
         jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
   }

@@ -5,3 +5,58 @@ Authorization: Bearer {{auth_token}}
 ### Get passed controls for logged in user
 GET {{url}}/controls
 Authorization: Bearer {{auth_token}}
+
+### Get control questions based on incorrect answers
+GET {{url}}/controls/personalized
+Authorization: Bearer {{auth_token}}
+
+### Save control user answers for logged in user
+POST {{url}}/controls
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "durationInSeconds": 360,
+  "userAnswers": [
+    {
+      "answerId": 57,
+      "questionId": 20
+    },
+    {
+      "answerId": 336,
+      "questionId": 71
+    },
+    {
+      "answerId": null,
+      "questionId": 42
+    },
+    {
+      "answerId": null,
+      "questionId": 15
+    },
+    {
+      "answerId": null,
+      "questionId": 16
+    },
+    {
+      "answerId": null,
+      "questionId": 44
+    },
+    {
+      "answerId": null,
+      "questionId": 54
+    },
+    {
+      "answerId": null,
+      "questionId": 31
+    },
+    {
+      "answerId": null,
+      "questionId": 47
+    },
+    {
+      "answerId": null,
+      "questionId": 35
+    }
+  ]
+}

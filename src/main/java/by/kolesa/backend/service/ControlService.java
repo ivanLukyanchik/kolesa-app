@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -142,6 +143,7 @@ public class ControlService {
         .durationInSeconds(controlAnswersDto.getDurationInSeconds())
         .userAnswers(new ArrayList<>())
         .userId(userService.getUserIdOfLoggedIn())
+        .createdAt(Instant.now())
         .build();
   }
 }
